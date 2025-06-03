@@ -1,0 +1,15 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net9.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\BSG.Common\BSG.Common.csproj" />
+      <ProjectReference Include="..\BSG.Database\BSG.Database.csproj" />
+      <ProjectReference Include="..\BSG.Entities\BSG.Entities.csproj" />
+    </ItemGroup>
+
+</Project>

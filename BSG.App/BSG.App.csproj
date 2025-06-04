@@ -11,4 +11,16 @@
         <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="9.0.2" PrivateAssets="all"/>
     </ItemGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\BSG.App.Common\BSG.App.Common.csproj" />
+      <ProjectReference Include="..\BSG.App.User\BSG.App.User.csproj" />
+      <ProjectReference Include="..\BSG.DataServices\BSG.DataServices.csproj" />
+      <ProjectReference Include="..\BSG.States\BSG.States.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <_ContentIncludedByDefault Remove="Layout\MainLayout.razor" />
+      <_ContentIncludedByDefault Remove="Layout\NavMenu.razor" />
+    </ItemGroup>
+
 </Project>

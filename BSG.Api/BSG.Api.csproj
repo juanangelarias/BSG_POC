@@ -17,4 +17,10 @@
         <PackageReference Include="Serilog.Sinks.File" Version="7.0.0" />
     </ItemGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\BSG.Common\BSG.Common.csproj" />
+      <ProjectReference Include="..\BSG.Features\BSG.Features.csproj" />
+      <ProjectReference Include="..\BSG.Repository\BSG.Repository.csproj" />
+    </ItemGroup>
+
 </Project>

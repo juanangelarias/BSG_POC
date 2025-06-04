@@ -6,7 +6,7 @@ namespace BSG.Repository.Base;
 
 public interface IRepositoryBase<TEntity, TDto>
     where TEntity : class, IEntityBase
-    where TDto : class, IDtoBase
+    where TDto : class
 {
     Task<TDto> CreateAsync( TDto dto );
     Task<IEnumerable<TDto>> CreateManyAsync( IEnumerable<TDto> dtos );

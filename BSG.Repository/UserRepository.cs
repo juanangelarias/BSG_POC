@@ -9,9 +9,8 @@ using Microsoft.EntityFrameworkCore;
 
 namespace BSG.Repository;
 
-public interface IUserRepository: IRepositoryBase<User, UserDto>
+public interface IUserRepository: IRepositoryExtended<User, UserDto>
 {
-    Task<PagedResponse<UserDto>> GetPageAsync(QueryParams parameters);
     Task<UserDto?> GetByUsername(string username);
     Task<UserDto?> GetByUsernameAndEmailToken(string username, string emailToken);
     Task<bool> VerifyEmailExistence(long? userId, string email);

@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using BSG.Common.DTO.Base;
 
-namespace BSG.Common.DTO.Base;
+namespace BSG.Common.DTO;
 
 public class ProductTypeDto : DtoBase
 {

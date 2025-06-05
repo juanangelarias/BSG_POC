@@ -1,4 +1,5 @@
 ﻿using BSG.Api.Controllers.Base;
+using BSG.Common.DTO;
 using BSG.Common.DTO.Base;
 using BSG.Entities;
 using BSG.Repository.Base;

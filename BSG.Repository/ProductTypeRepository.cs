@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using BSG.Common.DTO;
 using BSG.Common.DTO.Base;
 using BSG.Database;
 using BSG.Entities;

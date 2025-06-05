@@ -1,4 +1,9 @@
-﻿@inherits LayoutComponentBase
+﻿@using Radzen.Blazor
+
+@inherits LayoutComponentBase
+
+<RadzenComponents @rendermode="AssignedRenderMode" />
+
 <div class="page">
     <div class="sidebar">
         <NavMenu/>

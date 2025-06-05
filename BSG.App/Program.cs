@@ -8,6 +8,7 @@ using BSG.States;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
+using Radzen;
 
 namespace BSG.App;
 
@@ -42,6 +43,8 @@ public class Program
                 config.JsonSerializerOptions.ReadCommentHandling = JsonCommentHandling.Skip;
                 config.JsonSerializerOptions.WriteIndented = false;
             });
+        
+        builder.Services.AddRadzenComponents();
 
         // State Providers
         builder.Services

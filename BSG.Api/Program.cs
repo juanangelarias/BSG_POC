@@ -127,6 +127,9 @@ public class Program
             .AddScoped<IJwtUtils, JwtUtils>()
             // M
             .AddScoped<IMailService, MailService>()
+            // P
+            .AddScoped<IProductRepository, ProductRepository>()
+            .AddScoped<IProductTypeRepository, ProductTypeRepository>()
             // U
             .AddScoped<IUserFeature, UserFeature>()
             .AddScoped<IUserRepository, UserRepository>()

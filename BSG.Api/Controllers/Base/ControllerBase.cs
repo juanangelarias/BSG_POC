@@ -46,8 +46,8 @@ public class ControllerBase<TEntity, TDto>(
         }
     }
 
-    [HttpGet]
-    public async Task<ActionResult<Response<PagedResponse<TDto>>>> GetPage(QueryParams parameters)
+    [HttpGet("GetPage")]
+    public async Task<ActionResult<Response<PagedResponse<TDto>>>> GetPage([FromQuery] QueryParams parameters)
     {
         try
         {

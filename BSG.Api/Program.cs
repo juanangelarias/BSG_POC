@@ -79,7 +79,8 @@ public class Program
             .AddNewtonsoftJson(o=> o.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore);
         
         #region Swagger
-
+        
+        builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen(c =>
         {
             c.SwaggerDoc("v1", new OpenApiInfo
@@ -110,7 +111,7 @@ public class Program
                             Id = "Bearer"
                         }
                     },
-                    new string[] { }
+                    []
                 }
             });
         });
@@ -143,6 +144,9 @@ public class Program
             {
                 app.MapOpenApi();
             }
+
+            app.UseSwagger();
+            app.UseSwaggerUI();
 
             app.UseHttpsRedirection();
             app.UseAuthorization();

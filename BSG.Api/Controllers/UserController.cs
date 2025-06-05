@@ -10,6 +10,7 @@ using Serilog;
 
 namespace BSG.Api.Controllers;
 
+[Route("api/[controller]")]
 [ApiController]
 public class UserController(IWebHostEnvironment environment, IUserRepository repository, IUserFeature feature) 
     : ControllerBase<User, UserDto>(environment, repository)

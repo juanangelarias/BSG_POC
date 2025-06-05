@@ -7,6 +7,7 @@ using Serilog;
 
 namespace BSG.Api.Controllers.Base;
 
+[ApiController]
 public class ControllerBase<TEntity, TDto>(
     IWebHostEnvironment environment,
     IRepositoryExtended<TEntity, TDto> repository)

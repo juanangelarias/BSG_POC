@@ -18,7 +18,8 @@ public interface IUserFeature
     Task<bool> ResetPassword( long userId, string password );
 }
 
-public class UserFeature(IUserRepository userRepository,
+public class UserFeature(
+    IUserRepository userRepository,
     IUserPasswordRepository userPasswordRepository,
     IEncryptionService encryptionService,
     IJwtUtils jwtUtils,
@@ -26,6 +27,7 @@ public class UserFeature(IUserRepository userRepository,
     FrontEndParameters frontEndParameters,
     PasswordSettings passwordSettings,
     UserSettings userSettings)
+    : IUserFeature
 {
     public async Task<LoginResponse> Login(LoginRequest request)
     {
@@ -36,9 +38,9 @@ public class UserFeature(IUserRepository userRepository,
         };
 
         var user = await userRepository.GetByUsername(request.Username);
-        if (user is not {IsEnabled: true})
+        if (user is not { IsEnabled: true })
             return response;
-        
+
 
         var keyPass = await userPasswordRepository.GetUserKeyPassword(user.Id);
         if (keyPass == null)
@@ -81,7 +83,7 @@ public class UserFeature(IUserRepository userRepository,
             Body = template,
             IsHtml = true,
             Subject = "Welcome to the Conference Manager App.",
-            To = new List<string> {user.Email!}
+            To = new List<string> { user.Email! }
         };
 
         mailService.SendEmail(message);
@@ -110,7 +112,7 @@ public class UserFeature(IUserRepository userRepository,
             Body = template,
             IsHtml = true,
             Subject = "Conference Manager App. Reset password",
-            To = new List<string> {user.Email!}
+            To = new List<string> { user.Email! }
         };
 
         mailService.SendEmail(message);
@@ -136,7 +138,7 @@ public class UserFeature(IUserRepository userRepository,
             Body = template,
             IsHtml = true,
             Subject = "Conference Manager App. Password changed confirmation",
-            To = new List<string> {user.Email!}
+            To = new List<string> { user.Email! }
         };
 
         mailService.SendEmail(message);

@@ -1,3 +1,17 @@
+using AutoMapper;
+using AutoMapper.EquivalencyExpression;
+using BSG.BackEnd.Common.Model;
+using BSG.BackEnd.Services;
+using BSG.BackEnd.Services.Encryption;
+using BSG.BackEnd.Services.Jwt;
+using BSG.BackEnd.Services.Mail;
+using BSG.Database;
+using BSG.Database.Mappings;
+using BSG.Features;
+using BSG.Repository;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.OpenApi.Models;
+using Newtonsoft.Json;
 using Serilog;
 using Serilog.Events;
 
@@ -15,10 +29,108 @@ public class Program
             .CreateLogger();
         
         var builder = WebApplication.CreateBuilder(args);
-
+        
         // Add services to the container.
 
-        builder.Services.AddControllers();
+        builder.Services
+            .AddAutoMapper((sp, am) =>
+            {
+                am.AddCollectionMappers();
+                am.UseEntityFrameworkCoreModel<BsgDbContext>(sp);
+                am.AddProfile<SqlMappingsProfile>();
+            }, typeof(BsgDbContext).Assembly)
+            .AddHttpContextAccessor();
+
+        #region Configs
+
+        var keyConfig = new Keys();
+        builder.Configuration.Bind("Keys", keyConfig);
+
+        var mailParameter = new MailParameters();
+        builder.Configuration.Bind("MailParameters", mailParameter);
+
+        var frontEndParameter = new FrontEndParameters();
+        builder.Configuration.Bind("FrontEndParameters", frontEndParameter);
+
+        var passwordSettings = new PasswordSettings();
+        builder.Configuration.Bind("PasswordSettings", passwordSettings);
+
+        var jwtSettings = new JwtSettings();
+        builder.Configuration.Bind("JwtSettings", jwtSettings);
+
+        var userSettings = new UserSettings();
+        builder.Configuration.Bind("UserSettings", userSettings);
+
+        builder.Services
+            .AddSingleton(jwtSettings)
+            .AddSingleton(keyConfig)
+            .AddSingleton(mailParameter)
+            .AddSingleton(frontEndParameter)
+            .AddSingleton(passwordSettings)
+            .AddSingleton(userSettings);
+
+        #endregion
+
+        builder.Services.AddDbContext<BsgDbContext>(options =>
+            options.UseSqlite(builder.Configuration.GetConnectionString("BsgDbContext")));
+
+        builder.Services
+            .AddControllers()
+            .AddNewtonsoftJson(o=> o.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore);
+        
+        #region Swagger
+
+        builder.Services.AddSwaggerGen(c =>
+        {
+            c.SwaggerDoc("v1", new OpenApiInfo
+            {
+                Description = "BSG Web API",
+                Title = "BSG Web API",
+                Version = "v1"
+            });
+
+            c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+            {
+                Name = "Authorization",
+                Type = SecuritySchemeType.Http,
+                Scheme = "Bearer",
+                BearerFormat = "JWT",
+                In = ParameterLocation.Header,
+                Description = "JWT Authorization Header using Bearer scheme."
+            });
+
+            c.AddSecurityRequirement(new OpenApiSecurityRequirement
+            {
+                {
+                    new OpenApiSecurityScheme
+                    {
+                        Reference = new OpenApiReference
+                        {
+                            Type = ReferenceType.SecurityScheme,
+                            Id = "Bearer"
+                        }
+                    },
+                    new string[] { }
+                }
+            });
+        });
+
+        #endregion
+
+        builder.Services
+            // D
+            .AddScoped<IDateConverterService, DateConverterService>()
+            // E
+            .AddScoped<IEncryptionService, EncryptionService>()
+            // J
+            .AddScoped<IJwtUtils, JwtUtils>()
+            // M
+            .AddScoped<IMailService, MailService>()
+            // U
+            .AddScoped<IUserFeature, UserFeature>()
+            .AddScoped<IUserRepository, UserRepository>()
+            .AddScoped<IUserPasswordRepository, UserPasswordRepository>();
+        
         // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
         builder.Services.AddOpenApi();
 

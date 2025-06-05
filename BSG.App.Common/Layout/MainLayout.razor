@@ -4,7 +4,43 @@
 
 <RadzenComponents @rendermode="AssignedRenderMode" />
 
-<div class="page">
+<RadzenLayout Style="grid-template-columns: auto 1fr auto; grid-template-areas: 'rz-header rz-header rz-header' 'rz-sidebar rz-body rz-sidebar'">
+    <RadzenHeader>
+        <ChildContent>
+            <RadzenRow AlignItems="AlignItems.Center" JustifyContent="JustifyContent.Start" Gap="0px">
+                <RadzenColumn Size="5">
+                    <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center">
+                        <RadzenSidebarToggle Click="@(()=>_sidebarExpanded = !_sidebarExpanded)"/>
+                        <span style="overflow: hidden; white-space: nowrap; text-overflow: ellipsis;">BSG Proof of Concept</span>
+                    </RadzenStack>
+                </RadzenColumn>
+                <RadzenColumn Size="7">
+                    <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" JustifyContent="JustifyContent.End">
+                        <div class="rz-display-none rz-display-sm-inline-flex align-items-center">
+                            <RadzenLink Path="/" Text="Home" title="Home page" class="rz--mx-2 rz-mx-lg-4" target="_blank"/>
+                        </div>
+                    </RadzenStack>
+                </RadzenColumn>
+            </RadzenRow>
+        </ChildContent>
+    </RadzenHeader>
+    <RadzenBody @ref="_body0">
+        <ChildContent>
+            <RadzenContentContainer Name="main">
+                <RadzenRow Gap="2em" class="ez-pt-6 rx-px-0 rz-px-sm-8 rx-px-xl-12">
+                    @Body
+                </RadzenRow>
+            </RadzenContentContainer>
+        </ChildContent>
+    </RadzenBody>
+    
+    <RadzenSidebar @ref="_sidebar0" @bind-Expanded="@_sidebarExpanded" class="demos-sidebar" style="display: flex; flex-direction: column">
+        <NavMenu />
+    </RadzenSidebar>
+    
+</RadzenLayout>
+
+@*<div class="page">
     <div class="sidebar">
         <NavMenu/>
     </div>
@@ -18,4 +54,18 @@
             @Body
         </article>
     </main>
-</div>
+</div>*@
+
+@code
+{   
+    private RadzenSidebar _sidebar0 = null!;
+    private RadzenBody _body0 = null!;
+    private RadzenButton _wcagColorsInfo = null!;
+    private RadzenButton _rtlInfo = null!;
+    private RadzenButton _freeThemesInfo = null!;
+    private RadzenButton _premiumThemesInfo = null!;
+    
+    private bool _sidebarExpanded = true;
+    private bool _configSidebarExpanded = false;
+    private bool _rendered;
+}

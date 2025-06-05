@@ -1,4 +1,48 @@
 ﻿@using Microsoft.AspNetCore.Components.Routing
+
+@inject NavigationManager Navigation
+
+<div style="padding: 1rem">
+    <RadzenTextBox id="find" Placeholder="Search ..." type="search" 
+                   @oninput="@FilterPanelMenu" style="width: 100%" class="rz-search-input" aria-label="find" />
+</div>
+<div style="flex: 1; overflow: auto">
+    <RadzenPanelMenu Match="NavLinkMatch.Prefix">
+        <RadzenPanelMenuItem Text="Home" Click="@Navigate"/>
+        <RadzenPanelMenuItem Text="counter"  Click="@Navigate"/>
+        <RadzenPanelMenuItem Text="Weather" Click="@Navigate"/>
+    </RadzenPanelMenu>
+</div>
+
+@code
+{
+    private void FilterPanelMenu(ChangeEventArgs args)
+    {
+        var filter = args.Value?.ToString();
+    }
+
+    private void Navigate(MenuItemEventArgs args)
+    {
+        Console.WriteLine(args.Text);
+
+        switch (args.Text.ToLower())
+        {
+            case "counter":
+                Navigation.NavigateTo("counter");
+                break;
+            case "weather":
+                Navigation.NavigateTo("weather");
+                break;
+            default:
+                Navigation.NavigateTo("/");
+                break;
+        }
+    }
+}
+
+
+
+@*@using Microsoft.AspNetCore.Components.Routing
 <div class="top-row ps-3 navbar navbar-dark">
     <div class="container-fluid">
         <a class="navbar-brand" href="">BSG.App</a>
@@ -37,4 +81,4 @@
     {
         collapseNavMenu = !collapseNavMenu;
     }
-}
+}*@

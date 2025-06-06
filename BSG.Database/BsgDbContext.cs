@@ -9,6 +9,13 @@ namespace BSG.Database;
 public class BsgDbContext(DbContextOptions<BsgDbContext> options, IDateConverterService dateConverterService)
     : DbContext(options)
 {
+    // C
+    public DbSet<Component> Components { get; set; } = null!;
+    // E
+    public DbSet<Element> Elements { get; set; } = null!;
+    // P
+    public DbSet<Product> Products { get; set; } = null!;
+    public DbSet<ProductType> ProductTypes { get; set; } = null!;
     // U
     public DbSet<User> Users { get; set; } = null!;
     public DbSet<UserPassword> UserPasswords { get; set; } = null!;

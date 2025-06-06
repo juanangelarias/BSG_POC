@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using BSG.Common;
 using BSG.Common.DTO;
 using BSG.Common.DTO.Base;
 using BSG.Entities;
@@ -9,6 +10,10 @@ public class SqlMappingsProfile: Profile
 {
     public SqlMappingsProfile()
     {
+        // C
+        CreateMap<Component, ComponentDto>().ReverseMap();
+        // E
+        CreateMap<Element, ElementDto>().ReverseMap();
         // P
         CreateMap<Product, ProductDto>().ReverseMap();
         CreateMap<ProductType, ProductTypeDto>().ReverseMap();

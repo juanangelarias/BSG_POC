@@ -28,7 +28,7 @@ public class UserDataService : DataServiceBase<UserDto>, IUserDataService
     public UserDataService(HttpClient client, IGeneralState state, IErrorHandler errorHandler)
         : base(client, state, errorHandler)
     {
-        BaseUrl = "api/v1/user";
+        BaseUrl = "api/user";
     }
 
     public async Task SendWelcomeEmail(long userId)

@@ -11,7 +11,7 @@ public class BsgDbContextFactory: IDesignTimeDbContextFactory<BsgDbContext>
     {
         // Build config
         IConfiguration config = new ConfigurationBuilder()
-            .SetBasePath( Path.Combine( Directory.GetCurrentDirectory(), "..\\AS.CM.Api" ) )
+            .SetBasePath( Path.Combine( Directory.GetCurrentDirectory(), "..\\Bsg.Api" ) )
             .AddJsonFile( "appsettings.json", optional: false, reloadOnChange: true )
             .AddEnvironmentVariables()
             .Build();
@@ -19,7 +19,8 @@ public class BsgDbContextFactory: IDesignTimeDbContextFactory<BsgDbContext>
         // Get connection string
         var optionBuilder = new DbContextOptionsBuilder<BsgDbContext>();
         var connectionString = config.GetConnectionString( nameof( BsgDbContext ) );
-        optionBuilder.UseSqlite( connectionString!, b => b.MigrationsAssembly( "BSG.Database" ) );
+        optionBuilder.UseSqlServer( connectionString!, b => b.MigrationsAssembly( "BSG.Database" ) );
+        //optionBuilder.UseSqlite( connectionString!, b => b.MigrationsAssembly( "BSG.Database" ) );
 
         // ToDo: Add Migration User Resolver
         return new BsgDbContext( optionBuilder.Options, new DateConverterService() );

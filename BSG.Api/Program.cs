@@ -72,7 +72,8 @@ public class Program
         #endregion
 
         builder.Services.AddDbContext<BsgDbContext>(options =>
-            options.UseSqlite(builder.Configuration.GetConnectionString("BsgDbContext")));
+            options.UseSqlServer(builder.Configuration.GetConnectionString("BsgDbContext")));
+            //options.UseSqlite(builder.Configuration.GetConnectionString("BsgDbContext")));
 
         builder.Services
             .AddControllers()
@@ -119,9 +120,12 @@ public class Program
         #endregion
 
         builder.Services
+            // C
+            .AddScoped<IComponentRepository, ComponentRepository>()
             // D
             .AddScoped<IDateConverterService, DateConverterService>()
             // E
+            .AddScoped<IElementRepository, ElementRepository>()
             .AddScoped<IEncryptionService, EncryptionService>()
             // J
             .AddScoped<IJwtUtils, JwtUtils>()

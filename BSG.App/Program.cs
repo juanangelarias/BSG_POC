@@ -53,6 +53,10 @@ public class Program
             
         // DataServices
         builder.Services
+            // C
+            .AddScoped<IComponentDataService, ComponentDataService>()
+            //
+            .AddScoped<IElementDataService, ElementDataService>()
             // P
             .AddScoped<IProductDataService, ProductDataService>()
             .AddScoped<IProductTypeDataService, ProductTypeDataService>()

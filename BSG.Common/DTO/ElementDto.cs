@@ -1,8 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using BSG.Common.DTO;
 using BSG.Common.DTO.Base;
 
-namespace BSG.Common;
+namespace BSG.Common.DTO;
 
 public class ElementDto: DtoBase
 {

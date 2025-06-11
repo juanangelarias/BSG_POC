@@ -1,8 +1,4 @@
-﻿@using Radzen.Blazor
-
-@inherits LayoutComponentBase
-
-<RadzenComponents @rendermode="AssignedRenderMode" />
+﻿@inherits LayoutComponentBase
 
 <RadzenLayout Style="grid-template-columns: auto 1fr auto; grid-template-areas: 'rz-header rz-header rz-header' 'rz-sidebar rz-body rz-sidebar'">
     <RadzenHeader>
@@ -39,6 +35,8 @@
     </RadzenSidebar>
     
 </RadzenLayout>
+
+<RadzenComponents />
 
 @*<div class="page">
     <div class="sidebar">

@@ -24,7 +24,6 @@ public class YourRepositoryTests
             CreatedOn = DateTime.Now,
             ModifiedById = -1,
             ModifiedOn = DateTime.Now,
-            Timestamp = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
         },
 
         new()
@@ -36,7 +35,6 @@ public class YourRepositoryTests
             CreatedOn = DateTime.Now,
             ModifiedById = -1,
             ModifiedOn = DateTime.Now,
-            Timestamp = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
         },
 
         new()
@@ -48,7 +46,6 @@ public class YourRepositoryTests
             CreatedOn = DateTime.Now,
             ModifiedById = -1,
             ModifiedOn = DateTime.Now,
-            Timestamp = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
         }
     ];
 
@@ -92,7 +89,6 @@ public class YourRepositoryTests
             Id = 0,
             Name = "Component 1000",
             Description = "Description of Component 1000",
-            Timestamp = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
         });
         
         Assert.Equals(4, newComponent.Id);

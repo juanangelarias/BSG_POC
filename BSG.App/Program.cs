@@ -23,7 +23,8 @@ public class Program
         builder.RootComponents.Add<App>("#app");
         builder.RootComponents.Add<HeadOutlet>("head::after");
 
-        builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
+        builder.Services
+            .AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
 
         builder.Services
             .AddBlazoredLocalStorage(config =>
@@ -47,12 +48,14 @@ public class Program
                 config.JsonSerializerOptions.WriteIndented = false;
             });
         
-        builder.Services.AddRadzenComponents();
-
         // State Providers
         builder.Services
             // G
             .AddScoped<IGeneralState, GeneralState>()
+            // R
+            .AddRadzenComponents()
+            .AddRadzenCookieThemeService()
+            .AddRadzenQueryStringThemeService()
             // U
             .AddScoped<IUserState, UserState>();
             

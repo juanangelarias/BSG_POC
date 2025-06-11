@@ -3,14 +3,15 @@
 @inject NavigationManager Navigation
 
 <div style="padding: 1rem">
-    <RadzenTextBox id="find" Placeholder="Search ..." type="search" 
-                   @oninput="@FilterPanelMenu" style="width: 100%" class="rz-search-input" aria-label="find" />
+    <RadzenTextBox id="find" Placeholder="Search ..." type="search"
+                   @oninput="@FilterPanelMenu" style="width: 100%" class="rz-search-input" aria-label="find"/>
 </div>
 <div style="flex: 1; overflow: auto">
     <RadzenPanelMenu Match="NavLinkMatch.Prefix">
         <RadzenPanelMenuItem Text="Home" Click="@Navigate"/>
-        <RadzenPanelMenuItem Text="counter"  Click="@Navigate"/>
+        <RadzenPanelMenuItem Text="Counter" Click="@Navigate"/>
         <RadzenPanelMenuItem Text="Weather" Click="@Navigate"/>
+        <RadzenPanelMenuItem Text="Users" Click="@Navigate"/>
     </RadzenPanelMenu>
 </div>
 
@@ -27,6 +28,9 @@
 
         switch (args.Text.ToLower())
         {
+            case "users":
+                Navigation.NavigateTo("user");
+                break;
             case "counter":
                 Navigation.NavigateTo("counter");
                 break;
@@ -42,37 +46,7 @@
 
 
 
-@*@using Microsoft.AspNetCore.Components.Routing
-<div class="top-row ps-3 navbar navbar-dark">
-    <div class="container-fluid">
-        <a class="navbar-brand" href="">BSG.App</a>
-        <button title="Navigation menu" class="navbar-toggler" @onclick="ToggleNavMenu">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-    </div>
-</div>
-
-<div class="@NavMenuCssClass nav-scrollable" @onclick="ToggleNavMenu">
-    <nav class="nav flex-column">
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
-                <span class="bi bi-house-door-fill-nav-menu" aria-hidden="true"></span> Home
-            </NavLink>
-        </div>
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="counter">
-                <span class="bi bi-plus-square-fill-nav-menu" aria-hidden="true"></span> Counter
-            </NavLink>
-        </div>
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="weather">
-                <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Weather
-            </NavLink>
-        </div>
-    </nav>
-</div>
-
-@code {
+@*@code {
     private bool collapseNavMenu = true;
 
     private string? NavMenuCssClass => collapseNavMenu ? "collapse" : null;

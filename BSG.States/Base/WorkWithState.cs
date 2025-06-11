@@ -3,7 +3,7 @@ using BSG.Common.Model;
 
 namespace BSG.States.Base;
 
-public class WorkWithState<T, TEnum>: StateBase, IWorkWithState<T, TEnum>
+public abstract class WorkWithState<T, TEnum>: StateBase, IWorkWithState<T, TEnum>
     where T : DtoBase, new()
     where TEnum : Enum
 {
@@ -27,9 +27,9 @@ public class WorkWithState<T, TEnum>: StateBase, IWorkWithState<T, TEnum>
 
     #region Selected
 
-    private T? _selected;
+    private List<T>? _selected;
 
-    public T? Selected
+    public List<T>? Selected
     {
         get => _selected;
         set
@@ -114,9 +114,10 @@ public class WorkWithState<T, TEnum>: StateBase, IWorkWithState<T, TEnum>
     public virtual void SetSelected(long id)
     {
         Selected = id == 0
-            ? GetNew()
-            : List.FirstOrDefault(f => f.Id == id);
+            ? [GetNew()]
+            : List.Where(f => f.Id == id).ToList();
     }
+    
     protected virtual T GetNew()
     {
         return new T { Id = 0 };

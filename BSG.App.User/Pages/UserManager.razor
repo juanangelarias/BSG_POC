@@ -1,0 +1,54 @@
+﻿@page "/user"
+@using BSG.App.User.Model
+@using BSG.Common.DTO
+
+@inject IUserState State
+
+@inherits BsgComponentBase
+
+@switch (State.ActiveFunction)
+{
+    case UserFunction.EditNew:
+        break;
+    case UserFunction.List:
+        <UserList OnEdit="@OnEdit" OnDelete="@OnDelete"></UserList>
+        break;
+}
+
+@code {
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+
+        State.ActiveFunction = UserFunction.List;
+    }
+
+    private void OnEdit()
+    {
+        State.ActiveFunction = State.Selected != null
+            ? UserFunction.EditNew
+            : UserFunction.List;
+        
+        StateHasChanged();
+    }
+
+    private void OnDelete()
+    {
+        if(State.Selected == null)
+            return;
+
+        State.Delete();
+    }
+
+    private void ShowList()
+    {
+        State.ActiveFunction = UserFunction.List;
+        
+        StateHasChanged();
+    }
+
+    private async Task Submit(UserDto user)
+    {
+        var success = await State.Submit(user);
+    }
+}

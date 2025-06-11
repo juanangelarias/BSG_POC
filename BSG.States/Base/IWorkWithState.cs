@@ -8,7 +8,7 @@ public interface IWorkWithState<T, TEnum>
     where TEnum : Enum
 {
     List<T> List { get; set; }
-    T? Selected { get; set; }
+    List<T>? Selected { get; set; }
     //TableData<T>? Table { get; set; }
     int Count { get; set; }
     TEnum ActiveFunction { get; set; }

@@ -19,8 +19,8 @@ public class BsgDbContextFactory: IDesignTimeDbContextFactory<BsgDbContext>
         // Get connection string
         var optionBuilder = new DbContextOptionsBuilder<BsgDbContext>();
         var connectionString = config.GetConnectionString( nameof( BsgDbContext ) );
-        optionBuilder.UseSqlServer( connectionString!, b => b.MigrationsAssembly( "BSG.Database" ) );
-        //optionBuilder.UseSqlite( connectionString!, b => b.MigrationsAssembly( "BSG.Database" ) );
+        //optionBuilder.UseSqlServer( connectionString!, b => b.MigrationsAssembly( "BSG.Database" ) );
+        optionBuilder.UseSqlite( connectionString!, b => b.MigrationsAssembly( "BSG.Database" ) );
 
         // ToDo: Add Migration User Resolver
         return new BsgDbContext( optionBuilder.Options, new DateConverterService() );

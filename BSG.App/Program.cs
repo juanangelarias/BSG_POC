@@ -2,8 +2,11 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using Blazored.LocalStorage;
 using Blazored.SessionStorage;
+using BSG.App.Common.ErrorHandling;
+using BSG.App.User.State;
 using BSG.DataServices;
 using BSG.DataServices.Auth;
+using BSG.DataServices.Helper;
 using BSG.States;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.Web;
@@ -49,7 +52,9 @@ public class Program
         // State Providers
         builder.Services
             // G
-            .AddScoped<IGeneralState, GeneralState>();
+            .AddScoped<IGeneralState, GeneralState>()
+            // U
+            .AddScoped<IUserState, UserState>();
             
         // DataServices
         builder.Services
@@ -65,7 +70,9 @@ public class Program
 
         builder.Services
             .AddAuthorizationCore()
-            .AddScoped<AuthenticationStateProvider, CustomAuthState>();
+            .AddScoped<AuthenticationStateProvider, CustomAuthState>()
+            .AddScoped<IErrorHandler, ErrorHandler>()
+            .AddScoped<IExceptionRecorderService, ExceptionRecorderService>();
 
         await builder.Build().RunAsync();
     }

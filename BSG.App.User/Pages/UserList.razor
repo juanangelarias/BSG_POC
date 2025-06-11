@@ -1,0 +1,122 @@
+﻿@using BSG.Common.DTO
+@using BSG.Common.Model
+
+@inject IUserState State
+
+@inherits BsgComponentBase
+
+<RadzenDataGrid AllowFiltering="true" AllowColumnResize="true" AllowAlternatingRows="true"
+                FilterMode="FilterMode.Advanced" AllowSorting="true"
+                PageSize="12" AllowPaging="true" PagerHorizontalAlign="HorizontalAlign.Left"
+                ShowPagingSummary="true" ColumnWidth="30px" Data="@_data"
+                LogicalFilterOperator="LogicalFilterOperator.Or"
+                SelectionMode="DataGridSelectionMode.Single"
+                LoadData="@LoadData" IsLoading="@_isLoading">
+    <HeaderTemplate>
+        <RadzenColumn Width="50%">
+
+        </RadzenColumn>
+        <RadzenColumn Width="50%" Align="TextAlign.Right">
+            <RadzenButton Icon="add" @onclick="@Create" Style="width: 100%" Title="@BtnCreateTitle"
+                          MouseEnter="@(args => ShowTooltip(args, "btnCreate"))"/>
+        </RadzenColumn>
+    </HeaderTemplate>
+    <Columns>
+        <RadzenDataGridColumn Property="@nameof(UserDto.Username)" Filterable="true" Title="@_colUsername"
+                              Sortable="true" Width="125" TextAlign="TextAlign.Left"
+                              HeaderTooltip=@_tooltipUsername/>
+        <RadzenDataGridColumn Property="@nameof(UserDto.FullName)" Filterable="true" Title="@_colFullName"
+                              HeaderTooltip=@_tooltipFullName
+                              Sortable="true" Width="125" TextAlign="TextAlign.Left"/>
+        <RadzenDataGridColumn Property="@nameof(UserDto.IsAdmin)" Filterable="true" Title=@_colIsAdmin
+                              Sortable="true" Width="125" TextAlign="TextAlign.Center"
+                              HeaderTooltip=@_tooltipIsAdmin/>
+        <RadzenDataGridColumn Width="75">
+            <Template Context="data">
+                <RadzenButton Icon="edit" @onclick="@(() => Edit(data.Id))" Style="width: 100%" Text="@_btnEdit"
+                              MouseEnter="@(args => ShowTooltip(args, "btnEdit"))"/>
+            </Template>
+        </RadzenDataGridColumn>
+        <RadzenDataGridColumn Width="75">
+            <Template Context="data">
+                <RadzenButton Icon="delete" @onclick="@(() => Delete(data.Id))" Style="width: 100%" Text=@_btnDelete
+                              MouseEnter="@(args => ShowTooltip(args, "btnDelete"))"/>
+            </Template>
+        </RadzenDataGridColumn>
+    </Columns>
+</RadzenDataGrid>
+
+@code {
+    [Parameter, EditorRequired] public EventCallback OnEdit { get; set; }
+    [Parameter, EditorRequired] public EventCallback OnDelete { get; set; }
+
+    private string BtnCreateTitle => GetTitle("btnCreate");
+    private bool _isLoading;
+    private IEnumerable<UserDto> _data = [];
+
+    /*private string BtnEditTitle => GetTitle("btnEdit");
+    private string BtnDeleteTitle => GetTitle("btnDelete");*/
+    private string _colUsername = "";
+    private string _colFullName = "";
+    private string _colIsAdmin = "";
+    private string _tooltipUsername = "";
+    private string _tooltipFullName = "";
+    private string _tooltipIsAdmin = "";
+    private string _btnEdit = "";
+    private string _btnDelete = "";
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+
+        _colUsername = GetTitle("colUsername");
+        _colFullName = GetTitle("colUsername");
+        _colIsAdmin = GetTitle("isAdmin");
+        _tooltipUsername = GetTooltip("colUsername");
+        _tooltipFullName = GetTooltip("colUsername");
+        _tooltipIsAdmin = GetTooltip("isAdmin");
+        _btnEdit = GetTitle("BtnEdit");
+        _btnDelete = GetTitle("btnDelete");
+    }
+
+    private async Task LoadData(LoadDataArgs args)
+    {
+        _isLoading = true;
+
+        var qp = new QueryParams
+        {
+            Filter = args.Filter,
+            Sort = args.OrderBy,
+            Descending = false,
+            PageSize = args.Top ?? 12,
+            PageIndex = (args.Skip ?? 0) / (args.Top ?? 12)
+        };
+
+        await State.Get(qp);
+
+        _data = State.List;
+
+        _isLoading = false;
+    }
+
+    private async Task Create()
+    {
+        State.SetSelected(0);
+
+        await OnEdit.InvokeAsync();
+    }
+
+    private async Task Edit(long id)
+    {
+        State.SetSelected(id);
+
+        await OnEdit.InvokeAsync();
+    }
+
+    private async Task Delete(long id)
+    {
+        State.SetSelected(id);
+
+        await OnDelete.InvokeAsync();
+    }
+}

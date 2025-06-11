@@ -72,8 +72,8 @@ public class Program
         #endregion
 
         builder.Services.AddDbContext<BsgDbContext>(options =>
-            options.UseSqlServer(builder.Configuration.GetConnectionString("BsgDbContext")));
-            //options.UseSqlite(builder.Configuration.GetConnectionString("BsgDbContext")));
+            //options.UseSqlServer(builder.Configuration.GetConnectionString("BsgDbContext")));
+            options.UseSqlite(builder.Configuration.GetConnectionString("BsgDbContext")));
 
         builder.Services
             .AddControllers()

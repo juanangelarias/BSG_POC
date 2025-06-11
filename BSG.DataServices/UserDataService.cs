@@ -94,10 +94,9 @@ public class UserDataService : DataServiceBase<UserDto>, IUserDataService
         if(result == null)
             throw new DataServiceException("An error has occurred please retry later");
 
-        if (!result.Success)
-            throw new DataServiceException(result.Error?.Message ?? "An error has occurred please retry later");
-
-        return result.Content;
+        return !result.Success 
+            ? throw new DataServiceException(result.Error?.Message ?? "An error has occurred please retry later") 
+            : result.Content;
     }
 
     public async Task<UserDto?> GetByUsernameAndEmailToken(string username, string token)
@@ -116,10 +115,9 @@ public class UserDataService : DataServiceBase<UserDto>, IUserDataService
         if(result == null)
             throw new DataServiceException("An error has occurred please retry later");
 
-        if (!result.Success)
-            throw new DataServiceException(result.Error?.Message ?? "An error has occurred please retry later");
-
-        return result.Content;
+        return !result.Success 
+            ? throw new DataServiceException(result.Error?.Message ?? "An error has occurred please retry later") 
+            : result.Content;
     }
 
     public async Task<bool> SetPassword(long userId, ChangePasswordRequest passwordRequest)
@@ -140,10 +138,9 @@ public class UserDataService : DataServiceBase<UserDto>, IUserDataService
         if(result == null)
             throw new DataServiceException("An error has occurred please retry later");
 
-        if (!result.Success)
-            throw new DataServiceException(result.Error?.Message ?? "An error has occurred please retry later");
-
-        return result.Content;
+        return !result.Success 
+            ? throw new DataServiceException(result.Error?.Message ?? "An error has occurred please retry later") 
+            : result.Content;
     }
 
     public async Task<UserDto?> GetByUserName(string username)
@@ -162,9 +159,8 @@ public class UserDataService : DataServiceBase<UserDto>, IUserDataService
         if(result == null)
             throw new DataServiceException("An error has occurred please retry later");
 
-        if (!result.Success)
-            throw new DataServiceException(result.Error?.Message ?? "An error has occurred please retry later");
-
-        return result.Content;
+        return !result.Success
+            ? throw new DataServiceException(result.Error?.Message ?? "An error has occurred please retry later")
+            : result.Content;
     }
 }

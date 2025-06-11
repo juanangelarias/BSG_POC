@@ -10,7 +10,6 @@ public class EntityBase
     public DateTime CreatedOn { get; set; }
     public long? ModifiedById { get; set; }
     public DateTime? ModifiedOn { get; set; }
-    public byte[] Timestamp { get; set; } = null!;
 
 
     protected void MapBaseEntityProperties<TEntity>( EntityTypeBuilder<TEntity> entity,
@@ -31,8 +30,5 @@ public class EntityBase
                 .HasColumnName( primaryKeyColumnName )
                 .ValueGeneratedNever();
         }
-
-        entity.Property( p => p.Timestamp )
-            .IsRowVersion();
     }
 }

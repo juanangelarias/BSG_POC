@@ -3,5 +3,4 @@
 public interface IDtoBase
 {
     long Id { get; set; }
-    byte[]? Timestamp { get; set; }
 }

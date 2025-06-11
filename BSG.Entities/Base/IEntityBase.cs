@@ -7,5 +7,4 @@ public interface IEntityBase: IConfigurableEntity
     DateTime CreatedOn { get; set; }
     long? ModifiedById { get; set; }
     DateTime? ModifiedOn { get; set; }
-    byte[] Timestamp { get; set; }
 }

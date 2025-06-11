@@ -35,7 +35,7 @@ public class CustomAuthState: AuthenticationStateProvider, ICustomAuthState
         _localStorage = localStorage;
         _state = state;
 
-        SetPropertiesFromLocalStorage();
+        SetPropertiesFromLocalStorage().RunSynchronously();
     }
 
     public override Task<AuthenticationState> GetAuthenticationStateAsync() =>

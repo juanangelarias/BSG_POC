@@ -14,10 +14,10 @@ public interface IElementDataService : IDataServiceBase<ElementDto>
 }
 
 public class ElementDataService
-: DataServiceBase<ElementDto>, IElementDataService
+    : DataServiceBase<ElementDto>, IElementDataService
 {
     public ElementDataService(HttpClient client, IGeneralState state, IErrorHandler errorHandler)
-    : base(client, state, errorHandler)
+        : base(client, state, errorHandler)
     {
         BaseUrl = "api/Element";
     }
@@ -32,10 +32,10 @@ public class ElementDataService
             return [];
 
         var result = await response.Content.ReadFromJsonAsync<Response<List<ElementDto>>>();
-        
-        if(result == null)
+
+        if (result == null)
             throw new DataServiceException("An error has occured, please try again later");
-        
+
         return !result.Success
             ? throw new DataServiceException(result.Error?.Message ?? "An error has occurred please retry later")
             : result.Content ?? [];

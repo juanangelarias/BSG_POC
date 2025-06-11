@@ -56,13 +56,13 @@ public class DataServiceBase<T>(
             throw new DataServiceException("An error has occurred please retry later");
 
         var json = await response.Content.ReadAsStringAsync();
-        var result = JsonConvert.DeserializeObject<PagedResult<T>>(json);
+        var result = JsonConvert.DeserializeObject<Response<PagedResponse<T>>>(json);
         if (result == null)
             throw new DataServiceException("An error has occurred please retry later");
 
-        return !result.Success 
-            ? throw new DataServiceException(result.Error?.Message ?? "An error has occurred please retry later") 
-            : new PagedResponse<T>(result.Content ?? [], result.Count);
+        return !result.Success
+            ? throw new DataServiceException(result.Error?.Message ?? "An error has occurred please retry later")
+            : result.Content ?? new PagedResponse<T>([], 0);
     }
 
     public async Task<T?> Get(long id)
@@ -142,10 +142,10 @@ public class DataServiceBase<T>(
 
     public async Task<HttpResponseMessage?> GetResponse(HttpRequestMessage request)
     {
-        if (!string.IsNullOrEmpty(Token))
+        /*if (!string.IsNullOrEmpty(Token))
         {
             request.Headers.Add("Authorization", $"Bearer {Token}");
-        }
+        }*/
 
         HttpResponseMessage? response = null;
 

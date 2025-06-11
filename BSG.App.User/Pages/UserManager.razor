@@ -1,6 +1,7 @@
 ﻿@page "/user"
 @using BSG.App.User.Model
 @using BSG.Common.DTO
+@using BSG.Common.Model
 
 @inject IUserState State
 
@@ -21,6 +22,19 @@
         base.OnInitialized();
 
         State.ActiveFunction = UserFunction.List;
+    }
+
+    private async Task LoadData()
+    {
+        await State.Get(new QueryParams
+        {
+            Filter = "",
+            Descending = false,
+            Expand = true,
+            PageIndex = 0,
+            PageSize = 12,
+            Sort = ""
+        });
     }
 
     private void OnEdit()

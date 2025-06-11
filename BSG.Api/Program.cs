@@ -9,7 +9,6 @@ using BSG.Database;
 using BSG.Database.Mappings;
 using BSG.Features;
 using BSG.Repository;
-using BSG.Repository.Base;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using Newtonsoft.Json;
@@ -153,6 +152,13 @@ public class Program
                 app.MapOpenApi();
             }
 
+            app.UseCors(o => o
+                .AllowAnyHeader()
+                .AllowAnyMethod()
+                .AllowAnyOrigin()
+                .SetIsOriginAllowedToAllowWildcardSubdomains()
+            );
+            
             app.UseSwagger();
             app.UseSwaggerUI();
 

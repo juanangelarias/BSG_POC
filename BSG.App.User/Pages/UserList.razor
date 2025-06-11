@@ -79,10 +79,25 @@
         _btnDelete = GetTitle("btnDelete");
     }
 
+    protected override async Task OnParametersSetAsync()
+    {
+        await base.OnParametersSetAsync();
+        
+        await Load(new QueryParams
+        {
+            Filter = "",
+            Descending = false,
+            Expand = true,
+            PageIndex = 0,
+            PageSize = 12,
+            Sort = ""
+        });
+
+        _data = State.List;
+    }
+
     private async Task LoadData(LoadDataArgs args)
     {
-        _isLoading = true;
-
         var qp = new QueryParams
         {
             Filter = args.Filter,
@@ -92,10 +107,17 @@
             PageIndex = (args.Skip ?? 0) / (args.Top ?? 12)
         };
 
-        await State.Get(qp);
+        await Load(qp);
 
         _data = State.List;
+    }
 
+    private async Task Load(QueryParams parms)
+    {
+        _isLoading = true;
+
+        await State.Get(parms);
+        
         _isLoading = false;
     }
 

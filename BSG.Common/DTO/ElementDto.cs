@@ -25,6 +25,4 @@ public class ElementDto: DtoBase
     
     [MaxLength(500, ErrorMessage = "Help cannot exceed 500 characters")]
     public string Help { get; set; } = "";
-
-    public ComponentDto Component { get; set; } = null!;
 }

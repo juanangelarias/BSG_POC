@@ -52,6 +52,6 @@ public class ComponentRepository(IMapper mapper, BsgDbContext db)
             .Include(i=>i.Elements)
             .ToListAsync();
 
-        return _mapper.Map<List<ComponentDto>>(qry);
+        return qry.Select(cmp => _mapper.Map<ComponentDto>(cmp)).ToList();
     }
 }

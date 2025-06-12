@@ -15,7 +15,6 @@ public class ComponentController(IWebHostEnvironment environment, IComponentRepo
     : ControllerBase<Component, ComponentDto>(environment, repository)
 {
     private readonly IWebHostEnvironment _environment = environment;
-    private readonly IComponentRepository _repository = repository;
 
     [HttpGet("GetExtended")]
     public async Task<ActionResult<List<ComponentDto>>> GetExtended()
@@ -24,7 +23,7 @@ public class ComponentController(IWebHostEnvironment environment, IComponentRepo
         {
             var response = new Response<List<ComponentDto>>
             {
-                Content = await _repository.GetExtended(),
+                Content = await repository.GetExtended(),
                 Error = null
             };
 

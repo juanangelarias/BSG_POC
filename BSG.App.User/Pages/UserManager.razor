@@ -10,6 +10,7 @@
 @switch (State.ActiveFunction)
 {
     case UserFunction.EditNew:
+        <UserEdit Submit="@OnSubmit" Cancel="@OnCancel"></UserEdit>
         break;
     case UserFunction.List:
         <UserList OnEdit="@OnEdit" OnDelete="@OnDelete"></UserList>
@@ -22,19 +23,6 @@
         base.OnInitialized();
 
         State.ActiveFunction = UserFunction.List;
-    }
-
-    private async Task LoadData()
-    {
-        await State.Get(new QueryParams
-        {
-            Filter = "",
-            Descending = false,
-            Expand = true,
-            PageIndex = 0,
-            PageSize = 12,
-            Sort = ""
-        });
     }
 
     private void OnEdit()
@@ -61,8 +49,17 @@
         StateHasChanged();
     }
 
-    private async Task Submit(UserDto user)
+    private async Task OnSubmit(UserDto user)
     {
-        var success = await State.Submit(user);
+        _ = await State.Submit(user);
+
+        State.Selected = [];
+        ShowList();
+    }
+
+    private void OnCancel()
+    {
+        State.Selected = [];
+        ShowList();
     }
 }

@@ -1,7 +1,11 @@
 ﻿@using BSG.Common.DTO
 @using BSG.Common.Model
+@using BSG.States
 
 @inject IUserState State
+@inject IGeneralState GeneralState
+@inject NotificationService NotificationService
+@inject NavigationManager Navigation
 
 @inherits BsgComponentBase
 
@@ -67,11 +71,36 @@
 
     protected override void OnInitialized()
     {
+        _component = "UserList";
+        
         base.OnInitialized();
 
+        _metadata = GeneralState.Metadata.FirstOrDefault(r => r.Name == _component);
+
+        if (_metadata == null)
+        {
+            NotificationService.Notify(new NotificationMessage
+            {
+                Severity = NotificationSeverity.Error,
+                Summary = "Metadata Error",
+                Detail = $"There is no metadata defined for this component ({_component}).",
+                Duration = 5000
+            });
+            
+            Navigation.NavigateTo("/");
+        }
+        
+        ApplyMetadata();
+    }
+
+    private void ApplyMetadata()
+    {
+        if(_metadata == null)
+            return;
+        
         _colUsername = GetTitle("colUsername");
-        _colFullName = GetTitle("colUsername");
-        _colIsAdmin = GetTitle("isAdmin");
+        _colFullName = GetTitle("colFullName");
+        _colIsAdmin = GetTitle("colIsAdmin");
         _tooltipUsername = GetTooltip("colUsername");
         _tooltipFullName = GetTooltip("colUsername");
         _tooltipIsAdmin = GetTooltip("isAdmin");

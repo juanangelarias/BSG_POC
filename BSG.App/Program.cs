@@ -3,6 +3,7 @@ using System.Text.Json.Serialization;
 using Blazored.LocalStorage;
 using Blazored.SessionStorage;
 using BSG.App.Common.ErrorHandling;
+using BSG.App.Common.Helpers;
 using BSG.App.User.State;
 using BSG.DataServices;
 using BSG.DataServices.Auth;
@@ -61,10 +62,14 @@ public class Program
             
         // DataServices
         builder.Services
+            // B
+            .AddScoped<Bootstrap>()
             // C
             .AddScoped<IComponentDataService, ComponentDataService>()
-            //
+            // E
             .AddScoped<IElementDataService, ElementDataService>()
+            // G
+            .AddScoped<IGeneralState, GeneralState>()
             // P
             .AddScoped<IProductDataService, ProductDataService>()
             .AddScoped<IProductTypeDataService, ProductTypeDataService>()

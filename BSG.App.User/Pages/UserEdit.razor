@@ -1,5 +1,168 @@
-﻿<h3>UserEdit</h3>
+﻿@using System.Linq.Expressions
+@using BSG.Common.DTO
+@using BSG.States
+
+@inject IUserState State
+@inject IGeneralState GeneralState
+@inject NavigationManager Navigation
+@inject NotificationService NotificationService
+
+@inherits BsgComponentBase
+
+<div class="rz-p-p0 rz-p-md-12">
+    <RadzenRow Gap="1rem">
+        <RadzenColumn Column="12" SizeSM="6">
+            <RadzenTemplateForm TItem="@UserDto" Data="@_user">
+                <RadzenFormField Text="@_usernameLabel" Variant="Variant.Text" >
+                    <RadzenTextBox @bind-Value="@_user!.Username" type="email" #ref="@tb1"
+                                   MouseEnter="@args=>ShowTooltip(args, _usernameTooltip)"/>
+                </RadzenFormField>
+                <RadzenFormField Text="@_fullNameLabel" Variant="Variant.Text" >
+                    <RadzenTextBox @bind-Value="@_user!.FullName"
+                                   MouseEnter="@args=>ShowTooltip(args, _fullNameTooltip)"/>
+                </RadzenFormField>
+                <RadzenFormField Text="@_emailLabel" Variant="Variant.Text" >
+                    <RadzenTextBox @bind-Value="@_user!.Email" type="email"
+                                   MouseEnter="@args=>ShowTooltip(args, _emailTooltip)"/>
+                </RadzenFormField>
+                <RadzenFormField Text="@_phoneNumberLabel" Variant="Variant.Text" >
+                    <RadzenTextBox @bind-Value="@_user!.PhoneNumber" type="tel"
+                                   MouseEnter="@args=>ShowTooltip(args, _phoneNumberTooltip)"/>
+                    <RadzenRegexValidator Component="PhoneNumber" Pattern="^\d{10}$" Text="Invalid phone number format"/>
+                </RadzenFormField>
+                <RadzenFormField Text="@_mobileNumberLabel" Variant="Variant.Text" >
+                    <RadzenTextBox @bind-Value="@_user!.MobileNumber" type="tel"
+                                   MouseEnter="@args=>ShowTooltip(args, _mobileNumberTooltip)"/>
+                    <RadzenRegexValidator Component="MobileNumber" Pattern="^\d{10}$" Text="Invalid phone number format"/>
+                </RadzenFormField>
+                <RadzenFormField Text="@_isEnabledLabel" Variant="Variant.Text" >
+                    <RadzenCheckBox @bind-Value="@_user!.IsEnabled"
+                                    MouseEnter="@args=>ShowTooltip(args, _isEnabledTooltip)"/>
+                </RadzenFormField>
+                <RadzenFormField Text="@_isEmailConfirmedLabel" Variant="Variant.Text" >
+                    <RadzenCheckBox @bind-Value="@_user!.IsEmailConfirmed"
+                                    MouseEnter="@args=>ShowTooltip(args, _isEmailConfirmedTooltip)"/>
+                </RadzenFormField>
+                <RadzenFormField Text="@_isAdminLabel" Variant="Variant.Text" >
+                    <RadzenCheckBox @bind-Value="@_user!.IsAdmin"
+                                    MouseEnter="@args=>ShowTooltip(args, _isAdminTooltip)"/>
+                </RadzenFormField>
+                <RadzenStack Orientation="Orientation.Horizontal">
+                    <RadzenButton ButtonType="ButtonType.Submit" Text="@_btnSubmitLabel" 
+                                  MouseEnter="@args=>ShowTooltip(args, _btnSubmitTooltip)" 
+                                  Click="@OnSubmit" />
+                    <RadzenButton ButtonType="ButtonType.Button" Text="@_btnCancelLabel" 
+                                  MouseEnter="@args=>ShowTooltip(args, _btnCancelTooltip)" 
+                                  Click="@OnCancel" />
+                </RadzenStack>
+            </RadzenTemplateForm>
+        </RadzenColumn>
+    </RadzenRow>
+</div>
+
 
 @code {
+    [Parameter, EditorRequired] public required EventCallback<UserDto> Submit { get; set; }
+    [Parameter, EditorRequired] public required EventCallback Cancel { get; set; }
+
+    private RadzenTextBox tb1 = null!;
     
+    private string _usernameLabel = "";
+    private string _fullNameLabel = "";
+    private string _emailLabel = "";
+    private string _phoneNumberLabel = "";
+    private string _mobileNumberLabel = "";
+    private string _isEnabledLabel = "";
+    private string _isEmailConfirmedLabel = "";
+    private string _isAdminLabel = "";
+    private string _btnSubmitLabel = "";
+    private string _btnCancelLabel = "";
+
+    private string _usernameTooltip = "";
+    private string _fullNameTooltip = "";
+    private string _emailTooltip = "";
+    private string _phoneNumberTooltip = "";
+    private string _mobileNumberTooltip = "";
+    private string _isEnabledTooltip = "";
+    private string _isEmailConfirmedTooltip = "";
+    private string _isAdminTooltip = "";
+    private string _btnSubmitTooltip = "";
+    private string _btnCancelTooltip = "";
+
+    private UserDto? _user;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        
+        _component = "UserEdit";
+        _metadata = GeneralState.Metadata.FirstOrDefault(r => r.Name == _component);
+
+        if (_metadata == null)
+        {
+            NotificationService.Notify(new NotificationMessage
+            {
+                Severity = NotificationSeverity.Error,
+                Summary = "Metadata Error",
+                Detail = $"There is no metadata defined for this component ({_component}).",
+                Duration = 5000
+            });
+
+            Navigation.NavigateTo("/");
+        }
+
+        _user = State!.Selected!.FirstOrDefault();
+        if (_user == null)
+        {
+            NotificationService.Notify(new NotificationMessage
+            {
+                Severity = NotificationSeverity.Error,
+                Summary = "No User",
+                Detail = "The user has not been selected.",
+                Duration = 5000
+            });
+
+            Navigation.NavigateTo("/");
+        }
+
+        ApplyMetadata();
+    }
+
+    private void ApplyMetadata()
+    {
+        if(_metadata == null || _user == null)
+            return;
+        
+        _usernameLabel = GetTitle("Username");
+        _fullNameLabel = GetTitle("FullName");
+        _emailLabel = GetTitle("Email");
+        _phoneNumberLabel = GetTitle("PhoneNumber");
+        _mobileNumberLabel = GetTitle("MobileNumber");
+        _isEnabledLabel = GetTitle("IsEnabled");
+        _isEmailConfirmedLabel = GetTitle("IsEmailConfirmed");
+        _isAdminLabel = GetTitle("IsAdmin");
+        _btnSubmitLabel = GetTitle("BtnSubmit");
+        _btnCancelLabel = GetTitle("BtnCancel");
+
+        _usernameTooltip = GetTooltip("Username");
+        _fullNameTooltip = GetTooltip("FullName");
+        _emailTooltip = GetTooltip("Email");
+        _phoneNumberTooltip = GetTooltip("PhoneNumber");
+        _mobileNumberTooltip = GetTooltip("MobileNumber");
+        _isEnabledTooltip = GetTooltip("UsernameIsEnabled");
+        _isEmailConfirmedTooltip = GetTooltip("IsEmailConfirmed");
+        _isAdminTooltip = GetTooltip("IsAdmin");
+        _btnSubmitTooltip = GetTooltip("BtnSubmit");
+        _btnCancelTooltip = GetTooltip("BtnCancel");
+    }
+
+    private async Task OnSubmit()
+    {
+        await Submit.InvokeAsync(_user);
+    }
+
+    private async Task OnCancel()
+    {
+        await Cancel.InvokeAsync();
+    }
 }

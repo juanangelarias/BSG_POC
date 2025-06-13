@@ -1,5 +1,6 @@
 ﻿using System.Collections.Specialized;
 using BSG.App.Common.ErrorHandling;
+using BSG.Common.DTO;
 using Microsoft.AspNetCore.Components;
 using Radzen;
 
@@ -11,8 +12,8 @@ public abstract class BsgComponentBase : ComponentBase, IDisposable
     [Inject] public required NotificationService Notification { get; set; }
     [Inject] public required TooltipService Tooltip { get; set; }
 
-    public long ComponentId { get; set; } = 1;
-
+    protected string _component = "";
+    protected ComponentDto? _metadata;
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
@@ -41,53 +42,38 @@ public abstract class BsgComponentBase : ComponentBase, IDisposable
 
     protected string GetTitle(string code)
     {
-        if (ComponentId == 1)
-            return code.ToLower() switch
-            {
-                "btncreate" => "Add New",
-                "colusername" => "Username",
-                "colfullname" => "Full Name",
-                "colisadmin" => "Is Admin?",
-                "btnedit" => "Edit",
-                "btndelete" => "Delete",
-                _ => "No Title"
-            };
+        return _metadata!.Elements
+            .FirstOrDefault(f => f.Code.Equals(code, StringComparison.CurrentCultureIgnoreCase))?
+            .DisplayName ?? "No Title";
 
-        return "No Title";
     }
 
-    protected string GetTooltip(string code, TooltipOptions? options = null)
+    protected string GetTooltip(string code)
     {
-        if (ComponentId == 1)
-            return code.ToLower() switch
-            {
-                "btncreate" => "Create a new user",
-                "colusername" => "Write the Username",
-                "colfullname" => "Write the full name of the user",
-                "colisadmin" => "Check if the user is an administrator",
-                "btnedit" => "Edit the user data",
-                "btndelete" => "Delete the user",
-                _ => ""
-            };
-
-        return "";
+        return _metadata!.Elements
+            .FirstOrDefault(f => f.Code.Equals(code, StringComparison.CurrentCultureIgnoreCase))?
+            .Tooltip ?? "";
+    }
+    
+    protected string GetHelp(string code)
+    {
+        return _metadata!.Elements
+            .FirstOrDefault(f => f.Code.Equals(code, StringComparison.CurrentCultureIgnoreCase))?
+            .Help ?? "";
     }
     
     protected void ShowTooltip(ElementReference reference, string code, TooltipOptions? options = null)
     {
-        var text = "";
-        if (ComponentId == 1)
-            text = code.ToLower() switch
-            {
-                "btncreate" => "Create a new user",
-                "colusername" => "Write the Username",
-                "colfullname" => "Write the full name of the user",
-                "colisadmin" => "Check if the user is an administrator",
-                "btnedit" => "Edit the user data",
-                "btndelete" => "Delete the user",
-                _ => ""
-            };
+        var opts = options ??
+                   new TooltipOptions
+                   {
+                       Delay = 500,
+                       Duration = 1000,
+                       Position = TooltipPosition.Bottom
+                   };
+
+        var text = GetTooltip(code);
         
-        Tooltip.Open(reference, text, options);
+        Tooltip.Open(reference, text, opts);
     }
 }

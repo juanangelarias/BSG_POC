@@ -1,4 +1,5 @@
-﻿using BSG.Common.Model;
+﻿using BSG.Common.DTO;
+using BSG.Common.Model;
 using BSG.States.Base;
 
 namespace BSG.States;
@@ -12,6 +13,8 @@ public interface IGeneralState
     string? UserFullName { get; set; }
     bool IsAdmin { get; set; }
     List<string>? Roles { get; set; }
+    
+    List<ComponentDto> Metadata { get; set; }
 
     void Set(DateTime? expires, string? token, long? userId, string? username, string? userFullName, List<string>? roles);
     void Clear();
@@ -131,6 +134,21 @@ public class GeneralState: StateBase, IGeneralState
         }
     }
 
+    #endregion
+    
+    #region Metadata
+    
+    private List<ComponentDto> _metadata = [];
+    public List<ComponentDto> Metadata
+    {
+        get => _metadata;
+        set
+        {
+            _metadata = value;
+            OnPropertyChanged();
+        }
+    }
+    
     #endregion
     
     #endregion

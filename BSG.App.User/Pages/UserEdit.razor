@@ -8,49 +8,77 @@
 
 @inherits BsgComponentBase
 
-<div class="rz-p-p0 rz-p-md-12">
-    <RadzenRow Gap="1rem">
-        <RadzenColumn Size="12">
-            <RadzenStack Orientation="Orientation.Vertical" Margin="1rem">
-                <RadzenFormField Text="@_usernameLabel" Variant="Variant.Text">
-                    <RadzenTextBox @bind-Value="@_user!.Username" type="email" Name="UserName"/>
-                    <RadzenTooltip Target="UserName" Text="@_usernameTooltip"/>
-                </RadzenFormField>
-                <RadzenFormField Text="@_fullNameLabel" Variant="Variant.Text">
-                    <RadzenTextBox @bind-Value="@_user!.FullName"/>
-                </RadzenFormField>
-                <RadzenFormField Text="@_emailLabel" Variant="Variant.Text">
-                    <RadzenTextBox @bind-Value="@_user!.Email" type="email"/>
-                </RadzenFormField>
-                <RadzenFormField Text="@_phoneNumberLabel" Variant="Variant.Text">
-                    <RadzenTextBox @bind-Value="@_user!.PhoneNumber" type="tel"/>
-                    <RadzenRegexValidator Component="PhoneNumber" Pattern="^\d{10}$"
-                                          Text="Invalid phone number format"/>
-                </RadzenFormField>
-                <RadzenFormField Text="@_mobileNumberLabel" Variant="Variant.Text">
-                    <RadzenTextBox @bind-Value="@_user!.MobileNumber" type="tel"/>
-                    <RadzenRegexValidator Component="MobileNumber" Pattern="^\d{10}$"
-                                          Text="Invalid phone number format"/>
-                </RadzenFormField>
-                <RadzenFormField Text="@_isEnabledLabel" Variant="Variant.Text">
-                    <RadzenCheckBox @bind-Value="@_user!.IsEnabled"/>
-                </RadzenFormField>
-                <RadzenFormField Text="@_isEmailConfirmedLabel" Variant="Variant.Text">
-                    <RadzenCheckBox @bind-Value="@_user!.IsEmailConfirmed"/>
-                </RadzenFormField>
-                <RadzenFormField Text="@_isAdminLabel" Variant="Variant.Text">
-                    <RadzenCheckBox @bind-Value="@_user!.IsAdmin"/>
-                </RadzenFormField>
-                <RadzenStack Orientation="Orientation.Horizontal">
-                    <RadzenButton ButtonType="ButtonType.Submit" Text="@_btnSubmitLabel"
-                                  Click="@OnSubmit"/>
-                    <RadzenButton ButtonType="ButtonType.Button" Text="@_btnCancelLabel"
-                                  Click="@OnCancel"/>
-                </RadzenStack>
-            </RadzenStack>
-        </RadzenColumn>
+
+<RadzenColumn Size="6">
+    <RadzenRow>
+        <RadzenCard size="12" Variant="Variant.Text">
+            <RadzenText TextStyle="TextStyle.Subtitle2" TagName="TagName.H3" Text="@_usernameLabel"/>
+            <RadzenTextBox @bind-Value="@_user!.Username" type="email" Name="txtUsername" Style="width: 100%"
+                           MouseEnter="@(args => ShowTooltip(args, "Username"))"/>
+        </RadzenCard>
     </RadzenRow>
-</div>
+    <RadzenRow>
+        <RadzenCard size="12" Variant="Variant.Text">
+            <RadzenText TextStyle="TextStyle.Subtitle2" TagName="TagName.H3" Text="@_fullNameLabel"
+                        MouseEnter="@(args => ShowTooltip(args, "FullName"))"/>
+            <RadzenTextBox @bind-Value="@_user!.FullName" Name="txtFullName"/>
+        </RadzenCard>
+    </RadzenRow>
+    <RadzenRow>
+        <RadzenCard size="12" Variant="Variant.Text">
+            <RadzenText TextStyle="TextStyle.Subtitle2" TagName="TagName.H3" Text="@_emailLabel"
+                        MouseEnter="@(args => ShowTooltip(args, "Email"))"/>
+            <RadzenTextBox @bind-Value="@_user!.Email" type="email" Name="txtEmail"/>
+        </RadzenCard>
+    </RadzenRow>
+    <RadzenRow>
+        <RadzenCard size="12" Variant="Variant.Text">
+            <RadzenText TextStyle="TextStyle.Subtitle2" Text="@_phoneNumberLabel"/>
+            <RadzenTextBox @bind-Value="@_user!.PhoneNumber" type="tel" Name="PhoneNumber"
+                           MouseEnter="@(args => ShowTooltip(args, "PhoneNumber"))"/>
+            <RadzenRegexValidator Component="PhoneNumber" Pattern="^\d{10}$"
+                                  Text="Invalid phone number format"/>
+        </RadzenCard>
+    </RadzenRow>
+    <RadzenRow>
+        <RadzenCard size="12" Variant="Variant.Text">
+            <RadzenText TextStyle="TextStyle.Subtitle2" TagName="TagName.H3" Text="@_mobileNumberLabel"/>
+            <RadzenTextBox @bind-Value="@_user!.MobileNumber" type="tel" Name="MobileNumber"
+                           MouseEnter="@(args => ShowTooltip(args, "MobileNumber"))"/>
+            <RadzenRegexValidator Component="MobileNumber" Pattern="^\d{10}$"
+                                  Text="Invalid phone number format"/>
+        </RadzenCard>
+    </RadzenRow>
+    <RadzenRow>
+        <RadzenCard size="12" Variant="Variant.Text">
+            <RadzenCheckBox @bind-Value="@_user!.IsEnabled" Name="chkIsEnabled"
+                            MouseEnter="@(args => ShowTooltip(args, "IsEnabled"))"/>
+            <RadzenLabel Text="@_isEnabledLabel" Component="chkIsEnabled" class="rz-ms-2"/>
+        </RadzenCard>
+    </RadzenRow>
+    <RadzenRow>
+        <RadzenCard size="12" Variant="Variant.Text" Gap="0rem">
+            <RadzenCheckBox @bind-Value="@_user!.IsEmailConfirmed" Name="chkIsEmailConfirmed"
+                            MouseEnter="@(args => ShowTooltip(args, "IsEmailConfirmed"))"/>
+            <RadzenLabel Text="@_isEmailConfirmedLabel" Component="chkIsEmailConfirmed" class="rz-ms-2"/>
+        </RadzenCard>
+    </RadzenRow>
+    <RadzenRow>
+        <RadzenCard size="12" Variant="Variant.Text">
+            <RadzenCheckBox @bind-Value="@_user!.IsAdmin" Name="chkIsAdmin"
+                            MouseEnter="@(args => ShowTooltip(args, "IsAdmin"))"/>
+            <RadzenLabel Text="@_isAdminLabel" Component="chkIsAdmin" class="rz-ms-2"/>
+        </RadzenCard>
+    </RadzenRow>
+    <RadzenRow Gap="1rem" Style="padding-top: 2rem">
+        <RadzenStack Orientation="Orientation.Horizontal">
+            <RadzenButton ButtonType="ButtonType.Submit" Text="@_btnSubmitLabel"
+                          Click="@OnSubmit"/>
+            <RadzenButton ButtonType="ButtonType.Button" Text="@_btnCancelLabel"
+                          Click="@OnCancel"/>
+        </RadzenStack>
+    </RadzenRow>
+</RadzenColumn>
 
 
 @code {
@@ -157,4 +185,5 @@
     {
         await Cancel.InvokeAsync();
     }
+
 }

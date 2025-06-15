@@ -116,7 +116,7 @@
         await base.OnInitializedAsync();
 
         _component = "UserEdit";
-        _metadata = GeneralState.Metadata.FirstOrDefault(r => r.Name == _component);
+        _metadata = GeneralState.Metadata.Where(r => r.Component.Name == _component).ToList();
 
         if (_metadata == null)
         {

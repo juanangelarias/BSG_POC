@@ -1,5 +1,4 @@
 ﻿using Blazored.LocalStorage;
-using BSG.Common.DTO;
 using BSG.Common.Model;
 using BSG.DataServices;
 
@@ -7,7 +6,7 @@ namespace BSG.App.Common.Helpers;
 
 public class Bootstrap(IUserDataService userDataService, ILocalStorageService localStorage)
 {
-    private readonly IUserDataService _userDataService = userDataService;;
+    private readonly IUserDataService _userDataService = userDataService;
 
     public async Task<List<Metadata>> GetMetadata()
     {

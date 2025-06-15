@@ -1,6 +1,7 @@
 ﻿using System.Collections.Specialized;
 using BSG.App.Common.ErrorHandling;
 using BSG.Common.DTO;
+using BSG.Common.Model;
 using Microsoft.AspNetCore.Components;
 using Radzen;
 
@@ -13,7 +14,7 @@ public abstract class BsgComponentBase : ComponentBase, IDisposable
     [Inject] public required TooltipService Tooltip { get; set; }
 
     protected string _component = "";
-    protected ComponentDto? _metadata;
+    protected List<Metadata>? _metadata;
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
@@ -42,7 +43,7 @@ public abstract class BsgComponentBase : ComponentBase, IDisposable
 
     protected string GetTitle(string code)
     {
-        return _metadata!.Elements
+        return _metadata!
             .FirstOrDefault(f => f.Code.Equals(code, StringComparison.CurrentCultureIgnoreCase))?
             .DisplayName ?? "No Title";
 
@@ -50,14 +51,14 @@ public abstract class BsgComponentBase : ComponentBase, IDisposable
 
     protected string GetTooltip(string code)
     {
-        return _metadata!.Elements
+        return _metadata!
             .FirstOrDefault(f => f.Code.Equals(code, StringComparison.CurrentCultureIgnoreCase))?
             .Tooltip ?? "";
     }
     
     protected string GetHelp(string code)
     {
-        return _metadata!.Elements
+        return _metadata!
             .FirstOrDefault(f => f.Code.Equals(code, StringComparison.CurrentCultureIgnoreCase))?
             .Help ?? "";
     }

@@ -14,7 +14,7 @@ public interface IGeneralState
     bool IsAdmin { get; set; }
     List<string>? Roles { get; set; }
     
-    List<ComponentDto> Metadata { get; set; }
+    List<Metadata> Metadata { get; set; }
 
     void Set(DateTime? expires, string? token, long? userId, string? username, string? userFullName, List<string>? roles);
     void Clear();
@@ -138,8 +138,8 @@ public class GeneralState: StateBase, IGeneralState
     
     #region Metadata
     
-    private List<ComponentDto> _metadata = [];
-    public List<ComponentDto> Metadata
+    private List<Metadata> _metadata = [];
+    public List<Metadata> Metadata
     {
         get => _metadata;
         set

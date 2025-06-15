@@ -71,7 +71,7 @@
         
         base.OnInitialized();
 
-        _metadata = GeneralState.Metadata.FirstOrDefault(r => r.Name == _component);
+        _metadata = GeneralState.Metadata.Where(r => r.Name == _component).ToList();
 
         if (_metadata == null)
         {

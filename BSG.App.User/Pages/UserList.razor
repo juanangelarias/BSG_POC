@@ -35,19 +35,14 @@
         <RadzenDataGridColumn Property="@nameof(UserDto.IsAdmin)" Filterable="true" Title=@_colIsAdmin
                               Sortable="true" Width="125" TextAlign="TextAlign.Center"
                               HeaderTooltip=@_tooltipIsAdmin/>
-        <RadzenDataGridColumn Width="75">
+        <RadzenDataGridColumn Width="75" Sortable="false" Filterable="false">
             <Template Context="data">
-                <RadzenButton Icon="edit" Click="@(() => Edit(data.Id))" Style="width: 100%" Text="@_btnEdit"
+                <RadzenButton Icon="edit" Click="@(() => Edit(data.Id))" Style="width: 50%" Text="@_btnEdit"
                               MouseEnter="@(args => ShowTooltip(args, "btnEdit"))"
                               ButtonStyle="ButtonStyle.Primary" Size="ButtonSize.Small"/>
-                <RadzenButton Icon="delete" Click="@(() => Delete(data.Id))" Style="width: 100%" Text=@_btnDelete
+                <RadzenButton Icon="delete" Click="@(() => Delete(data.Id))" Style="width: 50%" Text=@_btnDelete
                               MouseEnter="@(args => ShowTooltip(args, "btnDelete"))"
                               ButtonStyle="ButtonStyle.Danger" Size="ButtonSize.Small"/>
-            </Template>
-        </RadzenDataGridColumn>
-        <RadzenDataGridColumn Width="75">
-            <Template Context="data">
-                
             </Template>
         </RadzenDataGridColumn>
     </Columns>

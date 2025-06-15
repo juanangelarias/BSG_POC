@@ -135,6 +135,7 @@ public class Program
             .AddScoped<IProductRepository, ProductRepository>()
             .AddScoped<IProductTypeRepository, ProductTypeRepository>()
             // U
+            .AddScoped<IUserAuthRepository, UserAuthRepository>()
             .AddScoped<IUserFeature, UserFeature>()
             .AddScoped<IUserRepository, UserRepository>()
             .AddScoped<IUserPasswordRepository, UserPasswordRepository>();

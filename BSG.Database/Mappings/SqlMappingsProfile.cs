@@ -19,6 +19,7 @@ public class SqlMappingsProfile: Profile
         CreateMap<ProductType, ProductTypeDto>().ReverseMap();
         // U
         CreateMap<User, UserDto>().ReverseMap();
+        CreateMap<UserAuth, UserAuthDto>().ReverseMap();
         CreateMap<UserPassword, UserPasswordDto>().ReverseMap();
     }
 }

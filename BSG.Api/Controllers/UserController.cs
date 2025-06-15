@@ -80,6 +80,56 @@ public class UserController(IWebHostEnvironment environment, IUserRepository rep
             });
         }
     }
+
+    [HttpGet("{userId:long}/GetUser")]
+    public async Task<ActionResult<Response<long>>> GetUser([FromRoute] long userId)
+    {
+        try
+        {
+            var user  = await feature.GetUser(userId);
+
+            return Ok(new Response<long> { Content = user, Error = null, ExecutionTime = DateTime.Now });
+        }
+        catch (Exception exception)
+        {
+            Log.Fatal(exception, "{Message}", exception.Message);
+            return Ok(new Response<UserDto>
+            {
+                Content = null,
+                Error = new Error
+                {
+                    Code = "500",
+                    Type = "Internal server error",
+                    Message = "An error has occurred please retry later"
+                }
+            });
+        }
+    }
+
+    [HttpGet("{userId:long}/GetMetadata")]
+    public async Task<ActionResult<Response<List<Metadata>>>> GetMetadata([FromRoute] long userId)
+    {
+        try
+        {
+            var metadata = await feature.GetMetadata(userId);
+
+            return Ok(new Response<List<Metadata>> { Content = metadata, Error = null, ExecutionTime = DateTime.Now });
+        }
+        catch (Exception exception)
+        {
+            Log.Fatal(exception, "{Message}", exception.Message);
+            return Ok(new Response<UserDto>
+            {
+                Content = null,
+                Error = new Error
+                {
+                    Code = "500",
+                    Type = "Internal server error",
+                    Message = "An error has occurred please retry later"
+                }
+            });
+        }
+    }
     
     [HttpPost("{userId:long}/sendWelcomeEmail")]
     public async Task<IActionResult> SendWelcomeEmail([FromRoute] long userId)

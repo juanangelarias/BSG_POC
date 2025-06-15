@@ -21,6 +21,8 @@ public interface IUserDataService: IDataServiceBase<UserDto>
     Task<UserDto?> GetByUsernameAndEmailToken(string username, string token);
     Task<bool> SetPassword(long userId, ChangePasswordRequest request);
     Task<UserDto?> GetByUserName(string username);
+    Task<long> GetUser(long userId);
+    Task<List<Metadata>> GetMetadata(long userId);
 }
 
 public class UserDataService : DataServiceBase<UserDto>, IUserDataService
@@ -162,5 +164,47 @@ public class UserDataService : DataServiceBase<UserDto>, IUserDataService
         return !result.Success
             ? throw new DataServiceException(result.Error?.Message ?? "An error has occurred please retry later")
             : result.Content;
+    }
+
+    public async Task<long> GetUser(long userId)
+    {
+        var request = new HttpRequestMessage(
+            HttpMethod.Get,
+            $"{BaseUrl}/{userId}/GetUser");
+
+        var response = await GetResponse(request);
+        
+        if(response == null)
+            return 0;
+        
+        var result = await response.Content.ReadFromJsonAsync<Response<long>>();
+        
+        if(result == null)
+            throw new DataServiceException("An error has occurred please retry later");
+        
+        return !result.Success
+            ? throw new DataServiceException(result.Error?.Message ?? "An error has occurred please retry later")
+            : result.Content;
+    }
+    
+    public async Task<List<Metadata>> GetMetadata(long userId)
+    {
+        var request = new HttpRequestMessage(
+            HttpMethod.Get,
+            $"{BaseUrl}/{userId}/GetMetadata");
+        
+        var response = await GetResponse(request);
+        
+        if(response == null)
+            return new List<Metadata>();
+        
+        var result = await response.Content.ReadFromJsonAsync<Response<List<Metadata>>>();
+        
+        if(result == null)
+            throw new DataServiceException("An error has occurred please retry later");
+
+        return !result.Success
+            ? throw new DataServiceException(result.Error?.Message ?? "An error has occurred please retry later")
+            : result.Content ?? new List<Metadata>();
     }
 }

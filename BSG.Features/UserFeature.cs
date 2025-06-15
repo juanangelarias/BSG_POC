@@ -16,12 +16,17 @@ public interface IUserFeature
     Task SendPasswordChangedConfirmationEmail( long userId );
     Task<bool> ChangePassword(long userId, ChangePasswordRequest request);
     Task<bool> ResetPassword( long userId, string password );
+    Task<List<Metadata>> GetMetadata( long userId );
+
+    Task<long> GetUser(long userId);
 }
 
 public class UserFeature(
     IUserRepository userRepository,
     IUserPasswordRepository userPasswordRepository,
     IEncryptionService encryptionService,
+    IUserAuthRepository userAuthRepository,
+    IComponentRepository componentRepository,
     IJwtUtils jwtUtils,
     IMailService mailService,
     FrontEndParameters frontEndParameters,
@@ -217,6 +222,45 @@ public class UserFeature(
         await userRepository.SetEmailToken(userId, token, expire);
 
         return token;
+    }
+
+    public async Task<List<Metadata>> GetMetadata(long userId)
+    {
+        var components = await componentRepository.GetExtended();
+        var userAuth = (await userAuthRepository.GetAsync())
+            .Where(r=>r.UserId == userId)
+            .ToList();
+
+        var metadata = (from cmp in components
+                from elem in cmp.Elements
+                let auth = userAuth.FirstOrDefault(r => r.ElementId == elem.Id)
+                select new Metadata
+                {
+                    Code = elem.Code,
+                    Name = elem.Name,
+                    DisplayName = elem.DisplayName,
+                    Tooltip = elem.Tooltip,
+                    Help = elem.Help,
+                    IsEnabled = auth?.IsEnabled ?? true,
+                    IsVisible = auth?.IsVisible ?? true,
+                    Component = cmp
+                })
+            .ToList();
+        
+        return metadata;
+    }
+
+    public async Task<long> GetUser(long userId)
+    {
+        var user = (await userRepository.GetAsync())
+            .Where(r=>r.Id != 1)
+            .OrderBy(o=>o.Id)
+            .ToList();
+        
+        if(userId == 0)
+            return user.FirstOrDefault()?.Id ?? 0;
+        
+        return user.FirstOrDefault(r=>r.Id != userId)?.Id ?? 0;
     }
 
     private enum EmailType

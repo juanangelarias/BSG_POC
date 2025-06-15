@@ -1,5 +1,4 @@
-﻿@using System.Linq.Expressions
-@using BSG.Common.DTO
+﻿@using BSG.Common.DTO
 @using BSG.States
 
 @inject IUserState State
@@ -11,51 +10,44 @@
 
 <div class="rz-p-p0 rz-p-md-12">
     <RadzenRow Gap="1rem">
-        <RadzenColumn Column="12" SizeSM="6">
-            <RadzenTemplateForm TItem="@UserDto" Data="@_user">
-                <RadzenFormField Text="@_usernameLabel" Variant="Variant.Text" >
-                    <RadzenTextBox @bind-Value="@_user!.Username" type="email" #ref="@tb1"
-                                   MouseEnter="@args=>ShowTooltip(args, _usernameTooltip)"/>
+        <RadzenColumn Size="12">
+            <RadzenStack Orientation="Orientation.Vertical" Margin="1rem">
+                <RadzenFormField Text="@_usernameLabel" Variant="Variant.Text">
+                    <RadzenTextBox @bind-Value="@_user!.Username" type="email" Name="UserName"/>
+                    <RadzenTooltip Target="UserName" Text="@_usernameTooltip"/>
                 </RadzenFormField>
-                <RadzenFormField Text="@_fullNameLabel" Variant="Variant.Text" >
-                    <RadzenTextBox @bind-Value="@_user!.FullName"
-                                   MouseEnter="@args=>ShowTooltip(args, _fullNameTooltip)"/>
+                <RadzenFormField Text="@_fullNameLabel" Variant="Variant.Text">
+                    <RadzenTextBox @bind-Value="@_user!.FullName"/>
                 </RadzenFormField>
-                <RadzenFormField Text="@_emailLabel" Variant="Variant.Text" >
-                    <RadzenTextBox @bind-Value="@_user!.Email" type="email"
-                                   MouseEnter="@args=>ShowTooltip(args, _emailTooltip)"/>
+                <RadzenFormField Text="@_emailLabel" Variant="Variant.Text">
+                    <RadzenTextBox @bind-Value="@_user!.Email" type="email"/>
                 </RadzenFormField>
-                <RadzenFormField Text="@_phoneNumberLabel" Variant="Variant.Text" >
-                    <RadzenTextBox @bind-Value="@_user!.PhoneNumber" type="tel"
-                                   MouseEnter="@args=>ShowTooltip(args, _phoneNumberTooltip)"/>
-                    <RadzenRegexValidator Component="PhoneNumber" Pattern="^\d{10}$" Text="Invalid phone number format"/>
+                <RadzenFormField Text="@_phoneNumberLabel" Variant="Variant.Text">
+                    <RadzenTextBox @bind-Value="@_user!.PhoneNumber" type="tel"/>
+                    <RadzenRegexValidator Component="PhoneNumber" Pattern="^\d{10}$"
+                                          Text="Invalid phone number format"/>
                 </RadzenFormField>
-                <RadzenFormField Text="@_mobileNumberLabel" Variant="Variant.Text" >
-                    <RadzenTextBox @bind-Value="@_user!.MobileNumber" type="tel"
-                                   MouseEnter="@args=>ShowTooltip(args, _mobileNumberTooltip)"/>
-                    <RadzenRegexValidator Component="MobileNumber" Pattern="^\d{10}$" Text="Invalid phone number format"/>
+                <RadzenFormField Text="@_mobileNumberLabel" Variant="Variant.Text">
+                    <RadzenTextBox @bind-Value="@_user!.MobileNumber" type="tel"/>
+                    <RadzenRegexValidator Component="MobileNumber" Pattern="^\d{10}$"
+                                          Text="Invalid phone number format"/>
                 </RadzenFormField>
-                <RadzenFormField Text="@_isEnabledLabel" Variant="Variant.Text" >
-                    <RadzenCheckBox @bind-Value="@_user!.IsEnabled"
-                                    MouseEnter="@args=>ShowTooltip(args, _isEnabledTooltip)"/>
+                <RadzenFormField Text="@_isEnabledLabel" Variant="Variant.Text">
+                    <RadzenCheckBox @bind-Value="@_user!.IsEnabled"/>
                 </RadzenFormField>
-                <RadzenFormField Text="@_isEmailConfirmedLabel" Variant="Variant.Text" >
-                    <RadzenCheckBox @bind-Value="@_user!.IsEmailConfirmed"
-                                    MouseEnter="@args=>ShowTooltip(args, _isEmailConfirmedTooltip)"/>
+                <RadzenFormField Text="@_isEmailConfirmedLabel" Variant="Variant.Text">
+                    <RadzenCheckBox @bind-Value="@_user!.IsEmailConfirmed"/>
                 </RadzenFormField>
-                <RadzenFormField Text="@_isAdminLabel" Variant="Variant.Text" >
-                    <RadzenCheckBox @bind-Value="@_user!.IsAdmin"
-                                    MouseEnter="@args=>ShowTooltip(args, _isAdminTooltip)"/>
+                <RadzenFormField Text="@_isAdminLabel" Variant="Variant.Text">
+                    <RadzenCheckBox @bind-Value="@_user!.IsAdmin"/>
                 </RadzenFormField>
                 <RadzenStack Orientation="Orientation.Horizontal">
-                    <RadzenButton ButtonType="ButtonType.Submit" Text="@_btnSubmitLabel" 
-                                  MouseEnter="@args=>ShowTooltip(args, _btnSubmitTooltip)" 
-                                  Click="@OnSubmit" />
-                    <RadzenButton ButtonType="ButtonType.Button" Text="@_btnCancelLabel" 
-                                  MouseEnter="@args=>ShowTooltip(args, _btnCancelTooltip)" 
-                                  Click="@OnCancel" />
+                    <RadzenButton ButtonType="ButtonType.Submit" Text="@_btnSubmitLabel"
+                                  Click="@OnSubmit"/>
+                    <RadzenButton ButtonType="ButtonType.Button" Text="@_btnCancelLabel"
+                                  Click="@OnCancel"/>
                 </RadzenStack>
-            </RadzenTemplateForm>
+            </RadzenStack>
         </RadzenColumn>
     </RadzenRow>
 </div>
@@ -66,7 +58,7 @@
     [Parameter, EditorRequired] public required EventCallback Cancel { get; set; }
 
     private RadzenTextBox tb1 = null!;
-    
+
     private string _usernameLabel = "";
     private string _fullNameLabel = "";
     private string _emailLabel = "";
@@ -94,7 +86,7 @@
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
-        
+
         _component = "UserEdit";
         _metadata = GeneralState.Metadata.FirstOrDefault(r => r.Name == _component);
 
@@ -130,9 +122,9 @@
 
     private void ApplyMetadata()
     {
-        if(_metadata == null || _user == null)
+        if (_metadata == null || _user == null)
             return;
-        
+
         _usernameLabel = GetTitle("Username");
         _fullNameLabel = GetTitle("FullName");
         _emailLabel = GetTitle("Email");

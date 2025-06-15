@@ -68,7 +68,7 @@ public abstract class BsgComponentBase : ComponentBase, IDisposable
                    new TooltipOptions
                    {
                        Delay = 500,
-                       Duration = 1000,
+                       //Duration = 1000,
                        Position = TooltipPosition.Bottom
                    };
 

@@ -37,14 +37,17 @@
                               HeaderTooltip=@_tooltipIsAdmin/>
         <RadzenDataGridColumn Width="75">
             <Template Context="data">
-                <RadzenButton Icon="edit" @onclick="@(() => Edit(data.Id))" Style="width: 100%" Text="@_btnEdit"
-                              MouseEnter="@(args => ShowTooltip(args, "btnEdit"))"/>
+                <RadzenButton Icon="edit" Click="@(() => Edit(data.Id))" Style="width: 100%" Text="@_btnEdit"
+                              MouseEnter="@(args => ShowTooltip(args, "btnEdit"))"
+                              ButtonStyle="ButtonStyle.Primary" Size="ButtonSize.Small"/>
+                <RadzenButton Icon="delete" Click="@(() => Delete(data.Id))" Style="width: 100%" Text=@_btnDelete
+                              MouseEnter="@(args => ShowTooltip(args, "btnDelete"))"
+                              ButtonStyle="ButtonStyle.Danger" Size="ButtonSize.Small"/>
             </Template>
         </RadzenDataGridColumn>
         <RadzenDataGridColumn Width="75">
             <Template Context="data">
-                <RadzenButton Icon="delete" @onclick="@(() => Delete(data.Id))" Style="width: 100%" Text=@_btnDelete
-                              MouseEnter="@(args => ShowTooltip(args, "btnDelete"))"/>
+                
             </Template>
         </RadzenDataGridColumn>
     </Columns>
@@ -58,8 +61,6 @@
     private bool _isLoading;
     private IEnumerable<UserDto> _data = [];
 
-    /*private string BtnEditTitle => GetTitle("btnEdit");
-    private string BtnDeleteTitle => GetTitle("btnDelete");*/
     private string _colUsername = "";
     private string _colFullName = "";
     private string _colIsAdmin = "";

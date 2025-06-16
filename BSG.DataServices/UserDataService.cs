@@ -21,7 +21,7 @@ public interface IUserDataService: IDataServiceBase<UserDto>
     Task<UserDto?> GetByUsernameAndEmailToken(string username, string token);
     Task<bool> SetPassword(long userId, ChangePasswordRequest request);
     Task<UserDto?> GetByUserName(string username);
-    Task<long> GetUser(long userId);
+    Task<UserDto?> GetUser(long userId);
     Task<List<Metadata>> GetMetadata(long userId);
 }
 
@@ -166,7 +166,7 @@ public class UserDataService : DataServiceBase<UserDto>, IUserDataService
             : result.Content;
     }
 
-    public async Task<long> GetUser(long userId)
+    public async Task<UserDto?> GetUser(long userId)
     {
         var request = new HttpRequestMessage(
             HttpMethod.Get,
@@ -175,9 +175,9 @@ public class UserDataService : DataServiceBase<UserDto>, IUserDataService
         var response = await GetResponse(request);
         
         if(response == null)
-            return 0;
+            return null;
         
-        var result = await response.Content.ReadFromJsonAsync<Response<long>>();
+        var result = await response.Content.ReadFromJsonAsync<Response<UserDto>>();
         
         if(result == null)
             throw new DataServiceException("An error has occurred please retry later");

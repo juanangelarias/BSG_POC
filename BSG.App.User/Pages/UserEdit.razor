@@ -1,4 +1,5 @@
 ﻿@using BSG.Common.DTO
+@using BSG.Common.Model
 @using BSG.States
 
 @inject IUserState State
@@ -12,39 +13,39 @@
 <RadzenColumn Size="6">
     <RadzenRow>
         <RadzenCard size="12" Variant="Variant.Text">
-            <RadzenText TextStyle="TextStyle.Subtitle2" TagName="TagName.H3" Text="@_usernameLabel"/>
+            <RadzenText TextStyle="TextStyle.Subtitle2" TagName="TagName.H3" Text="@_usernameMetadata.DisplayName"/>
             <RadzenTextBox @bind-Value="@_user!.Username" type="email" Name="txtUsername" Style="width: 100%"
-                           MouseEnter="@(args => ShowTooltip(args, "Username"))"/>
+                           MouseEnter="@(args => ShowTooltip(args, _usernameMetadata.Tooltip))"/>
         </RadzenCard>
     </RadzenRow>
     <RadzenRow>
         <RadzenCard size="12" Variant="Variant.Text">
-            <RadzenText TextStyle="TextStyle.Subtitle2" TagName="TagName.H3" Text="@_fullNameLabel"
-                        MouseEnter="@(args => ShowTooltip(args, "FullName"))"/>
+            <RadzenText TextStyle="TextStyle.Subtitle2" TagName="TagName.H3" Text="@_fullNameMetadata.DisplayName"
+                        MouseEnter="@(args => ShowTooltip(args, _fullNameMetadata.Tooltip))"/>
             <RadzenTextBox @bind-Value="@_user!.FullName" Name="txtFullName"/>
         </RadzenCard>
     </RadzenRow>
     <RadzenRow>
         <RadzenCard size="12" Variant="Variant.Text">
-            <RadzenText TextStyle="TextStyle.Subtitle2" TagName="TagName.H3" Text="@_emailLabel"
-                        MouseEnter="@(args => ShowTooltip(args, "Email"))"/>
+            <RadzenText TextStyle="TextStyle.Subtitle2" TagName="TagName.H3" Text="@_emailMetadata.DisplayName"
+                        MouseEnter="@(args => ShowTooltip(args, _emailMetadata.Tooltip))"/>
             <RadzenTextBox @bind-Value="@_user!.Email" type="email" Name="txtEmail"/>
         </RadzenCard>
     </RadzenRow>
     <RadzenRow>
         <RadzenCard size="12" Variant="Variant.Text">
-            <RadzenText TextStyle="TextStyle.Subtitle2" Text="@_phoneNumberLabel"/>
+            <RadzenText TextStyle="TextStyle.Subtitle2" Text="@_phoneNumberMetadata.DisplayName"/>
             <RadzenTextBox @bind-Value="@_user!.PhoneNumber" type="tel" Name="PhoneNumber"
-                           MouseEnter="@(args => ShowTooltip(args, "PhoneNumber"))"/>
+                           MouseEnter="@(args => ShowTooltip(args, _phoneNumberMetadata.Tooltip))"/>
             <RadzenRegexValidator Component="PhoneNumber" Pattern="^\d{10}$"
                                   Text="Invalid phone number format"/>
         </RadzenCard>
     </RadzenRow>
     <RadzenRow>
         <RadzenCard size="12" Variant="Variant.Text">
-            <RadzenText TextStyle="TextStyle.Subtitle2" TagName="TagName.H3" Text="@_mobileNumberLabel"/>
+            <RadzenText TextStyle="TextStyle.Subtitle2" TagName="TagName.H3" Text="@_mobileNumberMetadata.DisplayName"/>
             <RadzenTextBox @bind-Value="@_user!.MobileNumber" type="tel" Name="MobileNumber"
-                           MouseEnter="@(args => ShowTooltip(args, "MobileNumber"))"/>
+                           MouseEnter="@(args => ShowTooltip(args, _mobileNumberMetadata.Tooltip))"/>
             <RadzenRegexValidator Component="MobileNumber" Pattern="^\d{10}$"
                                   Text="Invalid phone number format"/>
         </RadzenCard>
@@ -52,29 +53,31 @@
     <RadzenRow>
         <RadzenCard size="12" Variant="Variant.Text">
             <RadzenCheckBox @bind-Value="@_user!.IsEnabled" Name="chkIsEnabled"
-                            MouseEnter="@(args => ShowTooltip(args, "IsEnabled"))"/>
-            <RadzenLabel Text="@_isEnabledLabel" Component="chkIsEnabled" class="rz-ms-2"/>
+                            MouseEnter="@(args => ShowTooltip(args, _isEnabledMetadata.Tooltip))"/>
+            <RadzenLabel Text="@_isEnabledMetadata.DisplayName" Component="chkIsEnabled" class="rz-ms-2"/>
         </RadzenCard>
     </RadzenRow>
     <RadzenRow>
         <RadzenCard size="12" Variant="Variant.Text" Gap="0rem">
             <RadzenCheckBox @bind-Value="@_user!.IsEmailConfirmed" Name="chkIsEmailConfirmed"
-                            MouseEnter="@(args => ShowTooltip(args, "IsEmailConfirmed"))"/>
-            <RadzenLabel Text="@_isEmailConfirmedLabel" Component="chkIsEmailConfirmed" class="rz-ms-2"/>
+                            MouseEnter="@(args => ShowTooltip(args, _isEmailConfirmedMetadata.Tooltip))"/>
+            <RadzenLabel Text="@_isEmailConfirmedMetadata.DisplayName" Component="chkIsEmailConfirmed" class="rz-ms-2"/>
         </RadzenCard>
     </RadzenRow>
     <RadzenRow>
         <RadzenCard size="12" Variant="Variant.Text">
             <RadzenCheckBox @bind-Value="@_user!.IsAdmin" Name="chkIsAdmin"
-                            MouseEnter="@(args => ShowTooltip(args, "IsAdmin"))"/>
-            <RadzenLabel Text="@_isAdminLabel" Component="chkIsAdmin" class="rz-ms-2"/>
+                            MouseEnter="@(args => ShowTooltip(args, _isAdminMetadata.Tooltip))"/>
+            <RadzenLabel Text="@_isAdminMetadata.DisplayName" Component="chkIsAdmin" class="rz-ms-2"/>
         </RadzenCard>
     </RadzenRow>
     <RadzenRow Gap="1rem" Style="padding-top: 2rem">
         <RadzenStack Orientation="Orientation.Horizontal">
-            <RadzenButton ButtonType="ButtonType.Submit" Text="@_btnSubmitLabel"
+            <RadzenButton ButtonType="ButtonType.Submit" Text="@_btnSubmitMetadata.DisplayName"
+                          MouseEnter="@(args => ShowTooltip(args, _btnSubmitMetadata.Tooltip))"
                           Click="@OnSubmit"/>
-            <RadzenButton ButtonType="ButtonType.Button" Text="@_btnCancelLabel"
+            <RadzenButton ButtonType="ButtonType.Button" Text="@_btnCancelMetadata.DisplayName"
+                          MouseEnter="@(args => ShowTooltip(args, _btnCancelMetadata.Tooltip))"
                           Click="@OnCancel"/>
         </RadzenStack>
     </RadzenRow>
@@ -85,29 +88,16 @@
     [Parameter, EditorRequired] public required EventCallback<UserDto> Submit { get; set; }
     [Parameter, EditorRequired] public required EventCallback Cancel { get; set; }
 
-    private RadzenTextBox tb1 = null!;
-
-    private string _usernameLabel = "";
-    private string _fullNameLabel = "";
-    private string _emailLabel = "";
-    private string _phoneNumberLabel = "";
-    private string _mobileNumberLabel = "";
-    private string _isEnabledLabel = "";
-    private string _isEmailConfirmedLabel = "";
-    private string _isAdminLabel = "";
-    private string _btnSubmitLabel = "";
-    private string _btnCancelLabel = "";
-
-    private string _usernameTooltip = "";
-    private string _fullNameTooltip = "";
-    private string _emailTooltip = "";
-    private string _phoneNumberTooltip = "";
-    private string _mobileNumberTooltip = "";
-    private string _isEnabledTooltip = "";
-    private string _isEmailConfirmedTooltip = "";
-    private string _isAdminTooltip = "";
-    private string _btnSubmitTooltip = "";
-    private string _btnCancelTooltip = "";
+    private Metadata _usernameMetadata = null!;
+    private Metadata _fullNameMetadata = null!;
+    private Metadata _emailMetadata = null!;
+    private Metadata _phoneNumberMetadata = null!;
+    private Metadata _mobileNumberMetadata = null!;
+    private Metadata _isEnabledMetadata = null!;
+    private Metadata _isEmailConfirmedMetadata = null!;
+    private Metadata _isAdminMetadata = null!;
+    private Metadata _btnSubmitMetadata = null!;
+    private Metadata _btnCancelMetadata = null!;
 
     private UserDto? _user;
 
@@ -153,27 +143,16 @@
         if (_metadata == null || _user == null)
             return;
 
-        _usernameLabel = GetTitle("Username");
-        _fullNameLabel = GetTitle("FullName");
-        _emailLabel = GetTitle("Email");
-        _phoneNumberLabel = GetTitle("PhoneNumber");
-        _mobileNumberLabel = GetTitle("MobileNumber");
-        _isEnabledLabel = GetTitle("IsEnabled");
-        _isEmailConfirmedLabel = GetTitle("IsEmailConfirmed");
-        _isAdminLabel = GetTitle("IsAdmin");
-        _btnSubmitLabel = GetTitle("BtnSubmit");
-        _btnCancelLabel = GetTitle("BtnCancel");
-
-        _usernameTooltip = GetTooltip("Username");
-        _fullNameTooltip = GetTooltip("FullName");
-        _emailTooltip = GetTooltip("Email");
-        _phoneNumberTooltip = GetTooltip("PhoneNumber");
-        _mobileNumberTooltip = GetTooltip("MobileNumber");
-        _isEnabledTooltip = GetTooltip("UsernameIsEnabled");
-        _isEmailConfirmedTooltip = GetTooltip("IsEmailConfirmed");
-        _isAdminTooltip = GetTooltip("IsAdmin");
-        _btnSubmitTooltip = GetTooltip("BtnSubmit");
-        _btnCancelTooltip = GetTooltip("BtnCancel");
+        _usernameMetadata = GetMetadata("Username");
+        _fullNameMetadata = GetMetadata("FullName");
+        _emailMetadata = GetMetadata("Email");
+        _phoneNumberMetadata = GetMetadata("PhoneNumber");
+        _mobileNumberMetadata = GetMetadata("MobileNumber");
+        _isEnabledMetadata = GetMetadata("IsEnabled");
+        _isEmailConfirmedMetadata = GetMetadata("IsEmailConfirmed");
+        _isAdminMetadata = GetMetadata("IsAdmin");
+        _btnSubmitMetadata = GetMetadata("BtnSubmit");
+        _btnCancelMetadata = GetMetadata("BtnCancel");
     }
 
     private async Task OnSubmit()

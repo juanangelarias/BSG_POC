@@ -1,4 +1,10 @@
-﻿@inherits LayoutComponentBase
+﻿@using BSG.App.Common.Helpers
+@using BSG.Common.DTO
+@inherits LayoutComponentBase
+
+@inject Bootstrap Bootstrap
+@inject TooltipService Tooltip
+@inject NavigationManager Navigation
 
 <RadzenLayout Style="grid-template-columns: auto 1fr auto; grid-template-areas: 'rz-header rz-header rz-header' 'rz-sidebar rz-body rz-sidebar'">
     <RadzenHeader>
@@ -6,21 +12,21 @@
             <RadzenRow AlignItems="AlignItems.Center" JustifyContent="JustifyContent.Start" Gap="0px">
                 <RadzenColumn Size="5">
                     <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center">
-                        <RadzenSidebarToggle Click="@(()=>_sidebarExpanded = !_sidebarExpanded)"/>
+                        <RadzenSidebarToggle Click="@(() => _sidebarExpanded = !_sidebarExpanded)"/>
                         <span style="overflow: hidden; white-space: nowrap; text-overflow: ellipsis;">BSG Proof of Concept</span>
                     </RadzenStack>
                 </RadzenColumn>
                 <RadzenColumn Size="7">
-                    <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" JustifyContent="JustifyContent.End">
-                        <div class="rz-display-none rz-display-sm-inline-flex align-items-center">
-                            <RadzenLink Path="/" Text="Home" title="Home page" class="rz--mx-2 rz-mx-lg-4" target="_blank"/>
-                        </div>
+                    <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center"
+                                 JustifyContent="JustifyContent.End">
+                        <RadzenButton Click="ChangeUser" Text="@(_user?.FullName ?? "No User")"
+                                      MouseEnter="@(args => ShowTooltip(args, "Change logged user"))"/>
                     </RadzenStack>
                 </RadzenColumn>
             </RadzenRow>
         </ChildContent>
     </RadzenHeader>
-    <RadzenBody @ref="_body0">
+    <RadzenBody>
         <ChildContent>
             <RadzenContentContainer Name="main">
                 <RadzenRow Gap="2em" class="ez-pt-6 rx-px-0 rz-px-sm-8 rx-px-xl-12">
@@ -29,41 +35,67 @@
             </RadzenContentContainer>
         </ChildContent>
     </RadzenBody>
-    
-    <RadzenSidebar @ref="_sidebar0" @bind-Expanded="@_sidebarExpanded" class="demos-sidebar" style="display: flex; flex-direction: column">
-        <NavMenu />
+
+    <RadzenSidebar @bind-Expanded="@_sidebarExpanded" class="demos-sidebar"
+                   style="display: flex; flex-direction: column">
+        <NavMenu/>
     </RadzenSidebar>
-    
+
 </RadzenLayout>
 
-<RadzenComponents />
-
-@*<div class="page">
-    <div class="sidebar">
-        <NavMenu/>
-    </div>
-
-    <main>
-        <div class="top-row px-4">
-            <a href="https://learn.microsoft.com/aspnet/core/" target="_blank">About</a>
-        </div>
-
-        <article class="content px-4">
-            @Body
-        </article>
-    </main>
-</div>*@
+<RadzenComponents/>
 
 @code
-{   
-    private RadzenSidebar _sidebar0 = null!;
-    private RadzenBody _body0 = null!;
-    private RadzenButton _wcagColorsInfo = null!;
+{
+    /*private RadzenSidebar _sidebar0 = null!;
+    private RadzenBody _body0 = null!;*/
+    
+    /*private RadzenButton _wcagColorsInfo = null!;
     private RadzenButton _rtlInfo = null!;
     private RadzenButton _freeThemesInfo = null!;
-    private RadzenButton _premiumThemesInfo = null!;
-    
+    private RadzenButton _premiumThemesInfo = null!;*/
+
     private bool _sidebarExpanded = true;
-    private bool _configSidebarExpanded = false;
-    private bool _rendered;
+    //private bool _configSidebarExpanded = false;
+
+    private UserDto? _user;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        await base.OnParametersSetAsync();
+        
+        await GetUser();
+    }
+
+    private async Task GetUser()
+    {
+        _user = await Bootstrap.GetUser() ?? new UserDto
+        {
+            Id = 0,
+            FullName = "No User"
+        };
+    }
+
+    private void ShowTooltip(ElementReference reference, string tooltip, TooltipOptions? options = null)
+    {
+        var opts = options ??
+                   new TooltipOptions
+                   {
+                       Delay = 500,
+                       Position = TooltipPosition.Bottom
+                   };
+
+        Tooltip.Open(reference, tooltip, opts);
+    }
+
+    private async Task ChangeUser()
+    {
+        await Bootstrap.ChangeUser();
+
+        await GetUser();
+        
+        StateHasChanged();
+        
+        Navigation.NavigateTo("/");
+    }
 }

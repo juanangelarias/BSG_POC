@@ -18,7 +18,7 @@ public interface IUserFeature
     Task<bool> ResetPassword( long userId, string password );
     Task<List<Metadata>> GetMetadata( long userId );
 
-    Task<long> GetUser(long userId);
+    Task<UserDto?> GetUser(long userId);
 }
 
 public class UserFeature(
@@ -250,17 +250,12 @@ public class UserFeature(
         return metadata;
     }
 
-    public async Task<long> GetUser(long userId)
+    public async Task<UserDto?> GetUser(long userId)
     {
         var user = (await userRepository.GetAsync())
-            .Where(r=>r.Id != 1)
-            .OrderBy(o=>o.Id)
-            .ToList();
+            .FirstOrDefault(r=>r.Id == userId);
         
-        if(userId == 0)
-            return user.FirstOrDefault()?.Id ?? 0;
-        
-        return user.FirstOrDefault(r=>r.Id != userId)?.Id ?? 0;
+        return user;
     }
 
     private enum EmailType

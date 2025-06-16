@@ -41,40 +41,45 @@ public abstract class BsgComponentBase : ComponentBase, IDisposable
         ExceptionRecorder.Exceptions.CollectionChanged -= RefreshUi;
     }
 
-    protected string GetTitle(string code)
+    protected Metadata GetMetadata(string code)
     {
-        return _metadata!
-            .FirstOrDefault(f => f.Code.Equals(code, StringComparison.CurrentCultureIgnoreCase))?
-            .DisplayName ?? "No Title";
-
+        return _metadata?.FirstOrDefault(f =>
+                   string.Equals(f.Code, code, StringComparison.CurrentCultureIgnoreCase))
+               ?? new Metadata
+               {
+                   Code = code,
+                   Component = new ComponentDto { Id = 0, Name = _component },
+                   DisplayName = "No title",
+                   Help = "No help",
+                   Tooltip = "",
+                   IsEnabled = false,
+                   IsVisible = true
+               };
     }
 
-    protected string GetTooltip(string code)
-    {
-        return _metadata!
-            .FirstOrDefault(f => f.Code.Equals(code, StringComparison.CurrentCultureIgnoreCase))?
-            .Tooltip ?? "";
-    }
-    
-    protected string GetHelp(string code)
-    {
-        return _metadata!
-            .FirstOrDefault(f => f.Code.Equals(code, StringComparison.CurrentCultureIgnoreCase))?
-            .Help ?? "";
-    }
-    
-    protected void ShowTooltip(ElementReference reference, string code, TooltipOptions? options = null)
+    protected void ShowTooltip(ElementReference reference, string tooltip, TooltipOptions? options = null)
     {
         var opts = options ??
                    new TooltipOptions
                    {
                        Delay = 500,
-                       //Duration = 1000,
                        Position = TooltipPosition.Bottom
                    };
 
-        var text = GetTooltip(code);
-        
-        Tooltip.Open(reference, text, opts);
+        Tooltip.Open(reference, tooltip, opts);
+    }
+
+    protected Metadata GetBlankMetadata()
+    {
+        return new Metadata
+        {
+            Code = "NoCode",
+            Component = new ComponentDto { Id = 0, Name = _component },
+            DisplayName = "No title",
+            Help = "No help",
+            Tooltip = "",
+            IsEnabled = false,
+            IsVisible = true
+        };
     }
 }

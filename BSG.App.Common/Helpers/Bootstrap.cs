@@ -1,28 +1,32 @@
 ﻿using Blazored.LocalStorage;
+using BSG.Common.DTO;
 using BSG.Common.Model;
 using BSG.DataServices;
+using BSG.States;
 
 namespace BSG.App.Common.Helpers;
 
-public class Bootstrap(IUserDataService userDataService, ILocalStorageService localStorage)
+public class Bootstrap(IUserDataService userDataService, ILocalStorageService localStorage, IGeneralState generalState)
 {
     private readonly IUserDataService _userDataService = userDataService;
 
     public async Task<List<Metadata>> GetMetadata()
     {
-        var userId = await localStorage.GetItemAsync<long>("userId");
-        if (userId == 0)
+        var user = await localStorage.GetItemAsync<UserDto>("user");
+        if (user == null || user.Id < 1)
         {
-            userId = await _userDataService.GetUser(userId);
+            await localStorage.ClearAsync();
+            user = await _userDataService.GetUser(2);
         }
-        await localStorage.SetItemAsync("userId", userId);
-        
-        var metadata = await localStorage.GetItemAsync<List<Metadata>>("metadata");
 
-        if (metadata != null && metadata.Count != 0) 
+        await localStorage.SetItemAsync("user", user);
+
+        var metadata = await localStorage.GetItemAsync<List<Metadata>>("metadata") ?? [];
+
+        if (metadata.Count != 0)
             return metadata;
-        
-        metadata = await _userDataService.GetMetadata(userId);
+
+        metadata = await _userDataService.GetMetadata(user!.Id);
         await localStorage.SetItemAsync("metadata", metadata);
 
         return metadata;
@@ -31,22 +35,35 @@ public class Bootstrap(IUserDataService userDataService, ILocalStorageService lo
     public async Task<List<Metadata>> ReloadMetadata()
     {
         await localStorage.RemoveItemAsync("metadata");
+
+        var metadata =  await GetMetadata();
+
+        generalState.Metadata = metadata;
         
-        return await GetMetadata();
+        return metadata;
+    }
+
+    public async Task<UserDto?> GetUser()
+    {
+        var user = await localStorage.GetItemAsync<UserDto>("user");
+        return user;
     }
 
     public async Task<List<Metadata>> ChangeUser()
     {
-        var userId = await localStorage.GetItemAsync<long>("userId");
-        if (userId == 0)
-        {
-            userId = await _userDataService.GetUser(userId);
-        }
+        var user = await localStorage.GetItemAsync<UserDto>("user");
 
-        userId = await _userDataService.GetUser(userId);
-        
-        await localStorage.SetItemAsync("userId", userId);
+        long userId =
+            user == null
+                ? 2
+                : user.Id == 2
+                    ? 3
+                    : 2;
 
-        return await GetMetadata();
+        user = await _userDataService.GetUser(userId);
+
+        await localStorage.SetItemAsync("user", user);
+
+        return await ReloadMetadata();
     }
 }

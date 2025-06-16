@@ -20,7 +20,7 @@ public class DataServiceBase<T>(
 {
     public string Token { get; set; } = state.Token ?? "";
 
-    protected string BaseUrl { get; set; } = string.Empty;
+    protected string BaseUrl { get; init; } = string.Empty;
 
     public async Task<List<T>> Get()
     {

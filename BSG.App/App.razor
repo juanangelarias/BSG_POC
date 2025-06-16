@@ -1,13 +1,15 @@
 ﻿@using System.Reflection
 @using BSG.App.Common.Helpers
 @using BSG.App.User.Pages
+@using Microsoft.AspNetCore.Components.WebAssembly.Services
 @using BSG.States
 
 @inject IGeneralState GeneralState
 @inject Bootstrap Bootstrap
+@inject LazyAssemblyLoader AssemblyLoader
 
 <Router AppAssembly="@typeof(App).Assembly"
-        AdditionalAssemblies="@_assemblies">
+        AdditionalAssemblies="_assemblies">
     <Found Context="routeData">
         <RouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)"/>
         <FocusOnNavigate RouteData="@routeData" Selector="h1"/>
@@ -22,6 +24,7 @@
 
 @code {
     private List<Assembly> _assemblies = [];
+    private bool _userAssemblyLoaded;
 
     protected override async Task OnInitializedAsync()
     {
@@ -34,5 +37,22 @@
         ];
 
         GeneralState.Metadata = await Bootstrap.GetMetadata();
+    }
+
+    private async Task OnNavigateAsync(NavigationContext args)
+    {
+        try
+        {
+            if (args.Path == "user" && !_userAssemblyLoaded)
+            {
+                var assemblies = await AssemblyLoader.LoadAssembliesAsync(new[] {"BSG.App.User.{FILE EXTENSION}"});
+                _assemblies.AddRange(assemblies);
+                _userAssemblyLoaded = true;
+            }
+        }
+        catch (Exception exception)
+        {
+            Console.WriteLine($"ERROR: {exception.Message}");
+        }
     }
 }

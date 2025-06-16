@@ -21,27 +21,30 @@
 
         </RadzenColumn>
         <RadzenColumn Width="50%" Align="TextAlign.Right">
-            <RadzenButton Icon="add" @onclick="@Create" Style="width: 100%" Title="@BtnCreateTitle"
-                          MouseEnter="@(args => ShowTooltip(args, "btnCreate"))"/>
+            <RadzenButton Icon="add" @onclick="@Create" Style="width: 100%" Title="@_btnCreateMetadata.DisplayName"
+                          Disabled="@(!_btnCreateMetadata.IsEnabled)" Visible="@(_btnDeleteMetadata.IsVisible)"
+                          MouseEnter="@(args => ShowTooltip(args, _btnCreateMetadata.Tooltip))"/>
         </RadzenColumn>
     </HeaderTemplate>
     <Columns>
-        <RadzenDataGridColumn Property="@nameof(UserDto.Username)" Filterable="true" Title="@_colUsername"
-                              Sortable="true" Width="125" TextAlign="TextAlign.Left"
-                              HeaderTooltip=@_tooltipUsername/>
-        <RadzenDataGridColumn Property="@nameof(UserDto.FullName)" Filterable="true" Title="@_colFullName"
-                              HeaderTooltip=@_tooltipFullName
+        <RadzenDataGridColumn Property="@nameof(UserDto.Username)" Filterable="true" Title="@_colUsernameMetadata.DisplayName"
+                              Sortable="true" Width="125" TextAlign="TextAlign.Left" Visible="@_colUsernameMetadata.IsVisible"
+                              HeaderTooltip="@_colUsernameMetadata.Tooltip"/>
+        <RadzenDataGridColumn Property="@nameof(UserDto.FullName)" Filterable="true" Title="@_colFullNameMetadata.DisplayName"
+                              HeaderTooltip="@_colFullNameMetadata.Tooltip" Visible="@_colFullNameMetadata.IsVisible"
                               Sortable="true" Width="125" TextAlign="TextAlign.Left"/>
-        <RadzenDataGridColumn Property="@nameof(UserDto.IsAdmin)" Filterable="true" Title=@_colIsAdmin
+        <RadzenDataGridColumn Property="@nameof(UserDto.IsAdmin)" Filterable="true" Title="@_colIsAdminMetadata.DisplayName"
                               Sortable="true" Width="125" TextAlign="TextAlign.Center"
-                              HeaderTooltip=@_tooltipIsAdmin/>
+                              HeaderTooltip="@_colIsAdminMetadata.Tooltip" Visible="@_colIsAdminMetadata.IsVisible"/>
         <RadzenDataGridColumn Width="75" Sortable="false" Filterable="false">
             <Template Context="data">
-                <RadzenButton Icon="edit" Click="@(() => Edit(data.Id))" Style="width: 50%" Text="@_btnEdit"
-                              MouseEnter="@(args => ShowTooltip(args, "btnEdit"))"
+                <RadzenButton Icon="edit" Click="@(() => Edit(data.Id))" Style="width: 50%" Text="@_btnEditMetadata.DisplayName"
+                              Disabled="@(!_btnEditMetadata.IsEnabled)" Visible="@(_btnEditMetadata.IsVisible)"
+                              MouseEnter="@(args => ShowTooltip(args, _btnEditMetadata.Tooltip))"
                               ButtonStyle="ButtonStyle.Primary" Size="ButtonSize.Small"/>
-                <RadzenButton Icon="delete" Click="@(() => Delete(data.Id))" Style="width: 50%" Text=@_btnDelete
-                              MouseEnter="@(args => ShowTooltip(args, "btnDelete"))"
+                <RadzenButton Icon="delete" Click="@(() => Delete(data.Id))" Style="width: 50%" Text="@_btnDeleteMetadata.DisplayName"
+                              Disabled="@(!_btnDeleteMetadata.IsEnabled)" Visible="@(_btnDeleteMetadata.IsVisible)"
+                              MouseEnter="@(args => ShowTooltip(args, _btnDeleteMetadata.Tooltip))"
                               ButtonStyle="ButtonStyle.Danger" Size="ButtonSize.Small"/>
             </Template>
         </RadzenDataGridColumn>
@@ -52,28 +55,43 @@
     [Parameter, EditorRequired] public EventCallback OnEdit { get; set; }
     [Parameter, EditorRequired] public EventCallback OnDelete { get; set; }
 
-    private string BtnCreateTitle => GetTitle("btnCreate");
     private bool _isLoading;
     private IEnumerable<UserDto> _data = [];
 
-    private string _colUsername = "";
-    private string _colFullName = "";
-    private string _colIsAdmin = "";
-    private string _tooltipUsername = "";
-    private string _tooltipFullName = "";
-    private string _tooltipIsAdmin = "";
-    private string _btnEdit = "";
-    private string _btnDelete = "";
+    private Metadata _colUsernameMetadata = null!;
+    private Metadata _colFullNameMetadata = null!;
+    private Metadata _colIsAdminMetadata = null!;
+    private Metadata _btnEditMetadata = null!;
+    private Metadata _btnDeleteMetadata = null!;
+    private Metadata _btnCreateMetadata = null!;
+
 
     protected override void OnInitialized()
     {
         _component = "UserList";
-        
+
         base.OnInitialized();
 
-        _metadata = GeneralState.Metadata.Where(r => r.Name == _component).ToList();
+        _colUsernameMetadata = GetBlankMetadata();
+        _colFullNameMetadata = GetBlankMetadata();
+        _colIsAdminMetadata = GetBlankMetadata();
+        _btnEditMetadata = GetBlankMetadata();
+        _btnDeleteMetadata = GetBlankMetadata();
+        _btnCreateMetadata = GetBlankMetadata();
+    }
 
-        if (_metadata == null)
+    protected override void OnParametersSet()
+    {
+        base.OnParametersSet();
+        
+        ApplyMetadata();
+    }
+
+    private void ApplyMetadata()
+    {
+        _metadata = GeneralState.Metadata.Where(r => r.Component.Name == _component).ToList();
+
+        if (_metadata == null || _metadata.Count == 0)
         {
             NotificationService.Notify(new NotificationMessage
             {
@@ -86,22 +104,12 @@
             Navigation.NavigateTo("/");
         }
         
-        ApplyMetadata();
-    }
-
-    private void ApplyMetadata()
-    {
-        if(_metadata == null)
-            return;
-        
-        _colUsername = GetTitle("colUsername");
-        _colFullName = GetTitle("colFullName");
-        _colIsAdmin = GetTitle("colIsAdmin");
-        _tooltipUsername = GetTooltip("colUsername");
-        _tooltipFullName = GetTooltip("colUsername");
-        _tooltipIsAdmin = GetTooltip("isAdmin");
-        _btnEdit = GetTitle("BtnEdit");
-        _btnDelete = GetTitle("btnDelete");
+        _colUsernameMetadata = GetMetadata("colUsername");
+        _colFullNameMetadata = GetMetadata("colFullName");
+        _colIsAdminMetadata = GetMetadata("colIsAdmin");
+        _btnEditMetadata = GetMetadata("BtnEdit");
+        _btnDeleteMetadata = GetMetadata("btnDelete");
+        _btnCreateMetadata = GetMetadata("btnCreate");
     }
 
     protected override async Task OnParametersSetAsync()

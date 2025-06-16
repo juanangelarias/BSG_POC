@@ -82,13 +82,13 @@ public class UserController(IWebHostEnvironment environment, IUserRepository rep
     }
 
     [HttpGet("{userId:long}/GetUser")]
-    public async Task<ActionResult<Response<long>>> GetUser([FromRoute] long userId)
+    public async Task<ActionResult<Response<UserDto>>> GetUser([FromRoute] long userId)
     {
         try
         {
             var user  = await feature.GetUser(userId);
 
-            return Ok(new Response<long> { Content = user, Error = null, ExecutionTime = DateTime.Now });
+            return Ok(new Response<UserDto> { Content = user, Error = null, ExecutionTime = DateTime.Now });
         }
         catch (Exception exception)
         {

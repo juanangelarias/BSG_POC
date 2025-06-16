@@ -31,10 +31,7 @@
       <Folder Include="Pages\" />
     </ItemGroup>
 	
-	<!--
 	<ItemGroup>
-		<BlazorWebAssemblyLazyLoad Include="BSG.App.User.dll" />
-	</ItemGroup>
-	-->
-
+		<BlazorWebAssemblyLazyLoad Include="BSG.App.User.wasm" />
+	</ItemGroup>	
 </Project>

@@ -1,6 +1,5 @@
 ﻿@using System.Reflection
 @using BSG.App.Common.Helpers
-@using BSG.App.User.Pages
 @using Microsoft.AspNetCore.Components.WebAssembly.Services
 @using BSG.States
 
@@ -9,7 +8,8 @@
 @inject LazyAssemblyLoader AssemblyLoader
 
 <Router AppAssembly="@typeof(App).Assembly"
-        AdditionalAssemblies="_assemblies">
+        AdditionalAssemblies="@_assemblies"
+        OnNavigateAsync="OnNavigateAsync">
     <Found Context="routeData">
         <RouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)"/>
         <FocusOnNavigate RouteData="@routeData" Selector="h1"/>
@@ -33,7 +33,7 @@
         _assemblies =
         [
             typeof(MainLayout).Assembly,
-            typeof(UserManager).Assembly
+            //typeof(UserManager).Assembly
         ];
 
         GeneralState.Metadata = await Bootstrap.GetMetadata();
@@ -43,9 +43,9 @@
     {
         try
         {
-            if (args.Path == "user" && !_userAssemblyLoaded)
+            if (args.Path.Equals("user", StringComparison.InvariantCultureIgnoreCase) && !_userAssemblyLoaded)
             {
-                var assemblies = await AssemblyLoader.LoadAssembliesAsync(new[] {"BSG.App.User.{FILE EXTENSION}"});
+                var assemblies = await AssemblyLoader.LoadAssembliesAsync(new[] {"BSG.App.User.wasm"});
                 _assemblies.AddRange(assemblies);
                 _userAssemblyLoaded = true;
             }

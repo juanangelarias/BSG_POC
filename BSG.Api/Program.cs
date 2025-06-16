@@ -29,6 +29,15 @@ public class Program
             .CreateLogger();
         
         var builder = WebApplication.CreateBuilder(args);
+
+        builder.WebHost.ConfigureKestrel(so =>
+        {
+            so.Limits.KeepAliveTimeout = TimeSpan.FromMinutes(2);
+            so.Limits.MaxConcurrentConnections = 100;
+            so.Limits.MaxConcurrentUpgradedConnections = 100;
+            so.Limits.MaxRequestBodySize = 100_000_000;
+            so.ListenAnyIP(5130);
+        });
         
         // Add services to the container.
 

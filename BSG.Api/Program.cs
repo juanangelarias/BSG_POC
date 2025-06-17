@@ -32,7 +32,7 @@ public class Program
         
         var builder = WebApplication.CreateBuilder(args);
         
-        /*builder.WebHost.ConfigureKestrel(so =>
+        builder.WebHost.ConfigureKestrel(so =>
         {
             so.Limits.KeepAliveTimeout = TimeSpan.FromMinutes(2);
             so.Limits.MaxConcurrentConnections = 100;
@@ -44,7 +44,7 @@ public class Program
                 listenOptions.Protocols = HttpProtocols.Http1AndHttp2AndHttp3;
                 listenOptions.UseHttps();
             });
-        });*/
+        });
         
         // Add services to the container.
 

@@ -1,3 +1,4 @@
+using System.Net;
 using AutoMapper;
 using AutoMapper.EquivalencyExpression;
 using BSG.BackEnd.Common.Model;
@@ -9,6 +10,7 @@ using BSG.Database;
 using BSG.Database.Mappings;
 using BSG.Features;
 using BSG.Repository;
+using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using Newtonsoft.Json;
@@ -29,6 +31,20 @@ public class Program
             .CreateLogger();
         
         var builder = WebApplication.CreateBuilder(args);
+        
+        /*builder.WebHost.ConfigureKestrel(so =>
+        {
+            so.Limits.KeepAliveTimeout = TimeSpan.FromMinutes(2);
+            so.Limits.MaxConcurrentConnections = 100;
+            so.Limits.MaxConcurrentUpgradedConnections = 100;
+            so.Limits.MaxRequestBodySize = 100_000_000;
+            so.ListenAnyIP(5130);
+            so.Listen(IPAddress.Loopback, 7260, listenOptions =>
+            {
+                listenOptions.Protocols = HttpProtocols.Http1AndHttp2AndHttp3;
+                listenOptions.UseHttps();
+            });
+        });*/
         
         // Add services to the container.
 

@@ -19,6 +19,8 @@
                 <RadzenColumn Size="7">
                     <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center"
                                  JustifyContent="JustifyContent.End">
+                        <RadzenButton Click="ReloadMetadata" Text="Reload Metadata"
+                                      MouseEnter="@(args => ShowTooltip(args, "Change logged user"))"/>
                         <RadzenButton Click="ChangeUser" Text="@(_user?.FullName ?? "No User")"
                                       MouseEnter="@(args => ShowTooltip(args, "Change logged user"))"/>
                     </RadzenStack>
@@ -93,6 +95,15 @@
         await Bootstrap.ChangeUser();
 
         await GetUser();
+        
+        StateHasChanged();
+        
+        Navigation.NavigateTo("/");
+    }
+
+    private async Task ReloadMetadata()
+    {
+        await Bootstrap.ReloadMetadata();
         
         StateHasChanged();
         

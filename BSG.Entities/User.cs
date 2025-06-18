@@ -20,9 +20,11 @@ public class User: EntityBase, IEntityBase
     public string EmailToken { get; set; } = string.Empty;
     public DateTime? EmailTokenExpiration { get; set; }
     
-    public List<UserPassword> Passwords { get; set; } = [];
-    
     #endregion
+    
+    public List<UserPassword> Passwords { get; set; } = [];
+    public List<UserAuth> UserAuths { get; set; } = [];
+    public List<UserProfile> UserProfiles { get; set; } = [];
     
     public void OnModelCreating(ModelBuilder m)
     {

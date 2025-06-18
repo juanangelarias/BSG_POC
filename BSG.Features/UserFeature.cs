@@ -5,6 +5,7 @@ using BSG.BackEnd.Services.Mail;
 using BSG.Common.DTO;
 using BSG.Common.Model;
 using BSG.Repository;
+using BSG.Repository.Base;
 
 namespace BSG.Features;
 
@@ -27,6 +28,7 @@ public class UserFeature(
     IEncryptionService encryptionService,
     IUserAuthRepository userAuthRepository,
     IComponentRepository componentRepository,
+    IProfileAuthRepository profileAuthRepository,
     IJwtUtils jwtUtils,
     IMailService mailService,
     FrontEndParameters frontEndParameters,
@@ -227,27 +229,108 @@ public class UserFeature(
     public async Task<List<Metadata>> GetMetadata(long userId)
     {
         var components = await componentRepository.GetExtended();
+        var user = await userRepository.GetExtended(userId);
         var userAuth = (await userAuthRepository.GetAsync())
             .Where(r=>r.UserId == userId)
             .ToList();
 
-        var metadata = (from cmp in components
-                from elem in cmp.Elements
-                let auth = userAuth.FirstOrDefault(r => r.ElementId == elem.Id)
-                select new Metadata
-                {
-                    Code = elem.Code,
-                    Name = elem.Name,
-                    DisplayName = elem.DisplayName,
-                    Tooltip = elem.Tooltip,
-                    Help = elem.Help,
-                    IsEnabled = auth?.IsEnabled ?? true,
-                    IsVisible = auth?.IsVisible ?? true,
-                    Component = cmp
-                })
-            .ToList();
+        var list = await GetAuthFromUserProfiles(user);
         
-        return metadata;
+        UpdateAuthFromUserAuth(components, userAuth, list);
+        
+        var result = new List<Metadata>();
+        list = list.OrderBy(r=>r.ComponentId).ThenBy(r=>r.ElementId).ToList();
+        
+        Metadata? metadata = null;
+        ComponentDto cmp = new();
+        
+        long? componentId = null;
+        
+        foreach (var item in list)
+        {
+            if (item.ComponentId != componentId)
+            {
+                if (metadata != null)
+                {
+                    result.Add(metadata);
+                }
+
+                cmp = components.FirstOrDefault(f => f.Id == item.ComponentId) ?? new ComponentDto();
+                
+                metadata = new Metadata
+                {
+                    Component = cmp
+                };
+                
+                componentId = item.ComponentId;
+            }
+            
+            var ele = cmp.Elements.FirstOrDefault(f => f.Id == item.ElementId) ?? new ElementDto();
+            
+            metadata!.Details.Add(new MetadataDetail
+            {
+                Code = ele.Code,
+                DisplayName = ele.DisplayName,
+                Help = ele.Help,
+                Tooltip = ele.Tooltip,
+                IsEnabled = item.IsEnabled,
+                IsVisible = item.IsVisible,
+            });
+        }
+        
+        if(metadata != null)
+            result.Add(metadata);
+        
+        return result;
+    }
+    
+    private static void UpdateAuthFromUserAuth(List<ComponentDto> components, List<UserAuthDto> userAuth, List<TempAuth> list)
+    {
+        foreach (var component in components)
+        {
+            foreach (var element in component.Elements)
+            {
+                var auth = userAuth.FirstOrDefault(r => r.ElementId == element.Id);
+                if(auth == null)
+                    continue;
+                
+                var record = list.FirstOrDefault(r => r.ComponentId == component.Id && r.ElementId == element.Id);
+                if (record == null)
+                {
+                    list.Add(new TempAuth
+                    {
+                        ComponentId = component.Id,
+                        ElementId = element.Id,
+                        IsEnabled = auth?.IsEnabled ?? true,
+                        IsVisible = auth?.IsVisible ?? true
+                    });
+                }
+                else
+                {
+                    record.IsEnabled = auth.IsEnabled;
+                    record.IsVisible = auth.IsVisible;
+                }
+            }
+        }
+    }
+
+    private async Task<List<TempAuth>> GetAuthFromUserProfiles(UserExtendedDto user)
+    {
+        var list = new List<TempAuth>();
+        
+        foreach (var prf in user.UserProfiles)
+        {
+            var prfAuths = await profileAuthRepository.GetByProfile(prf.Id);
+            list.AddRange(prfAuths.Select(s=>new TempAuth
+            {
+                ComponentId = s.Element.ComponentId,
+                ElementId = s.ElementId,
+                IsEnabled = s.IsEnabled,
+                IsVisible = s.IsVisible
+            }));
+        }
+
+        return list;
     }
 
     public async Task<UserDto?> GetUser(long userId)
@@ -262,5 +345,13 @@ public class UserFeature(
     {
         Welcome,
         ResetPassword
+    }
+
+    class TempAuth
+    {
+        public long ComponentId { get; set; }
+        public long ElementId { get; set; }
+        public bool IsEnabled { get; set; }
+        public bool IsVisible { get; set; }
     }
 }

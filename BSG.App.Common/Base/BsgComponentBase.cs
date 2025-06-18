@@ -41,14 +41,16 @@ public abstract class BsgComponentBase : ComponentBase, IDisposable
         ExceptionRecorder.Exceptions.CollectionChanged -= RefreshUi;
     }
 
-    protected Metadata GetMetadata(string code)
+    protected MetadataDetail GetMetadata(string code)
     {
-        return _metadata?.FirstOrDefault(f =>
-                   string.Equals(f.Code, code, StringComparison.CurrentCultureIgnoreCase))
-               ?? new Metadata
+        var componentMetadata = _metadata?
+                            .FirstOrDefault(f => string.Equals(f.Component.Name, _component, StringComparison.CurrentCultureIgnoreCase));
+
+        return componentMetadata?.Details
+                   .FirstOrDefault(f => string.Equals(f.Code, code, StringComparison.CurrentCultureIgnoreCase))
+               ?? new MetadataDetail()
                {
-                   Code = code,
-                   Component = new ComponentDto { Id = 0, Name = _component },
+                   Code = _component,
                    DisplayName = "No title",
                    Help = "No help",
                    Tooltip = "",
@@ -69,12 +71,11 @@ public abstract class BsgComponentBase : ComponentBase, IDisposable
         Tooltip.Open(reference, tooltip, opts);
     }
 
-    protected Metadata GetBlankMetadata()
+    protected MetadataDetail GetBlankMetadata()
     {
-        return new Metadata
+        return new MetadataDetail
         {
             Code = "NoCode",
-            Component = new ComponentDto { Id = 0, Name = _component },
             DisplayName = "No title",
             Help = "No help",
             Tooltip = "",

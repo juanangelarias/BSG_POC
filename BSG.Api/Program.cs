@@ -10,6 +10,7 @@ using BSG.Database;
 using BSG.Database.Mappings;
 using BSG.Features;
 using BSG.Repository;
+using BSG.Repository.Base;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
@@ -150,11 +151,14 @@ public class Program
             // P
             .AddScoped<IProductRepository, ProductRepository>()
             .AddScoped<IProductTypeRepository, ProductTypeRepository>()
+            .AddScoped<IProfileRepository, ProfileRepository>()
+            .AddScoped<IProfileAuthRepository, ProfileAuthRepository>()
             // U
             .AddScoped<IUserAuthRepository, UserAuthRepository>()
             .AddScoped<IUserFeature, UserFeature>()
             .AddScoped<IUserRepository, UserRepository>()
-            .AddScoped<IUserPasswordRepository, UserPasswordRepository>();
+            .AddScoped<IUserPasswordRepository, UserPasswordRepository>()
+            .AddScoped<IUserProfileRepository, UserProfileRepository>();
         
         // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
         builder.Services.AddOpenApi();

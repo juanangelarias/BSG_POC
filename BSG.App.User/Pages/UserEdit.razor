@@ -88,16 +88,16 @@
     [Parameter, EditorRequired] public required EventCallback<UserDto> Submit { get; set; }
     [Parameter, EditorRequired] public required EventCallback Cancel { get; set; }
 
-    private Metadata _usernameMetadata = null!;
-    private Metadata _fullNameMetadata = null!;
-    private Metadata _emailMetadata = null!;
-    private Metadata _phoneNumberMetadata = null!;
-    private Metadata _mobileNumberMetadata = null!;
-    private Metadata _isEnabledMetadata = null!;
-    private Metadata _isEmailConfirmedMetadata = null!;
-    private Metadata _isAdminMetadata = null!;
-    private Metadata _btnSubmitMetadata = null!;
-    private Metadata _btnCancelMetadata = null!;
+    private MetadataDetail _usernameMetadata = null!;
+    private MetadataDetail _fullNameMetadata = null!;
+    private MetadataDetail _emailMetadata = null!;
+    private MetadataDetail _phoneNumberMetadata = null!;
+    private MetadataDetail _mobileNumberMetadata = null!;
+    private MetadataDetail _isEnabledMetadata = null!;
+    private MetadataDetail _isEmailConfirmedMetadata = null!;
+    private MetadataDetail _isAdminMetadata = null!;
+    private MetadataDetail _btnSubmitMetadata = null!;
+    private MetadataDetail _btnCancelMetadata = null!;
 
     private UserDto? _user;
 

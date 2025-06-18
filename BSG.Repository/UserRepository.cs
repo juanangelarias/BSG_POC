@@ -16,6 +16,7 @@ public interface IUserRepository: IRepositoryExtended<User, UserDto>
     Task<bool> VerifyEmailExistence(long? userId, string email);
     Task<bool> SetEmailToken(long userId, string emailToken, DateTime? expires);
     Task<bool> ValidateEmailToken(long userId, string emailToken);
+    Task<UserExtendedDto> GetExtended(long id);
 }
 
 public class UserRepository(IMapper mapper, BsgDbContext db)
@@ -130,5 +131,15 @@ public class UserRepository(IMapper mapper, BsgDbContext db)
                 r.EmailTokenExpiration > DateTime.UtcNow );
 
         return valid;
+    }
+
+    public async Task<UserExtendedDto> GetExtended(long id)
+    {
+        var qry = await GetQuery()
+            .Include(i => i.UserAuths)
+            .Include(i => i.UserProfiles)
+            .FirstOrDefaultAsync(r=>r.Id == id);
+
+        return mapper.Map<UserExtendedDto>(qry);
     }
 }

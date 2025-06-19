@@ -17,6 +17,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\BSG.App.Common\BSG.App.Common.csproj" />
+      <ProjectReference Include="..\BSG.App.Component\BSG.App.Component.csproj" />
       <ProjectReference Include="..\BSG.App.User\BSG.App.User.csproj" />
       <ProjectReference Include="..\BSG.DataServices\BSG.DataServices.csproj" />
       <ProjectReference Include="..\BSG.States\BSG.States.csproj" />

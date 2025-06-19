@@ -1,5 +1,6 @@
 ﻿@using System.Reflection
 @using BSG.App.Common.Helpers
+@using BSG.App.Component.Pages
 @using BSG.App.User.Pages
 @using Microsoft.AspNetCore.Components.WebAssembly.Services
 @using BSG.States
@@ -32,8 +33,12 @@
 
         _assemblies =
         [
+            // C
+            typeof(ComponentManager).Assembly,
+            // M
             typeof(MainLayout).Assembly,
-            typeof(UserManager).Assembly
+            // U
+            typeof(UserManager).Assembly,
         ];
 
         GeneralState.Metadata = await Bootstrap.GetMetadata();

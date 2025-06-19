@@ -6,6 +6,11 @@ using BSG.States.Base;
 
 namespace BSG.App.User.State;
 
+public interface IUserState: IWorkWithState<UserDto, UserFunction>
+{
+    Task<bool> Submit(UserDto user);
+}
+
 public class UserState(IUserDataService userService): WorkWithState<UserDto, UserFunction>, IUserState
 {
     public override async Task Get(QueryParams parameters)
@@ -21,7 +26,7 @@ public class UserState(IUserDataService userService): WorkWithState<UserDto, Use
 
         var updatedUser = isNew
             ? await userService.Create(user)
-            :await userService.Update(user);
+            : await userService.Update(user);
 
         if (updatedUser == null)
             return false;

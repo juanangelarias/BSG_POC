@@ -23,7 +23,8 @@
         <RadzenColumn Width="50%" Align="TextAlign.Right">
             <RadzenButton Icon="add" @onclick="@Create" Style="width: 100%" Title="@_btnCreateMetadata.DisplayName"
                           Disabled="@(!_btnCreateMetadata.IsEnabled)" Visible="@(_btnDeleteMetadata.IsVisible)"
-                          MouseEnter="@(args => ShowTooltip(args, _btnCreateMetadata.Tooltip))"/>
+                          MouseEnter="@(args => ShowTooltip(args, _btnCreateMetadata.Tooltip))"
+                          Name="BtnCreate"/>
         </RadzenColumn>
     </HeaderTemplate>
     <Columns>

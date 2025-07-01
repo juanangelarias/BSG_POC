@@ -16,9 +16,12 @@ public class BsgDbContext(DbContextOptions<BsgDbContext> options, IDateConverter
     // P
     public DbSet<Product> Products { get; set; } = null!;
     public DbSet<ProductType> ProductTypes { get; set; } = null!;
+    public DbSet<Profile> Profiles { get; set; }
+    public DbSet<ProfileAuth> ProfileAuths { get; set; }
     // U
     public DbSet<User> Users { get; set; } = null!;
     public DbSet<UserPassword> UserPasswords { get; set; } = null!;
+    public DbSet<UserProfile> UserProfiles { get; set; }
     
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

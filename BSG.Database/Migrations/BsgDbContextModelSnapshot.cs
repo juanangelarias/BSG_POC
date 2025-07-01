@@ -15,7 +15,7 @@ namespace BSG.Database.Migrations
         protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
-            modelBuilder.HasAnnotation("ProductVersion", "9.0.5");
+            modelBuilder.HasAnnotation("ProductVersion", "9.0.6");
 
             modelBuilder.Entity("BSG.Entities.Component", b =>
                 {
@@ -195,6 +195,84 @@ namespace BSG.Database.Migrations
                     b.ToTable("ProductType", (string)null);
                 });
 
+            modelBuilder.Entity("BSG.Entities.Profile", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER")
+                        .HasColumnName("ProfileId");
+
+                    b.Property<long?>("CreatedById")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime>("CreatedOn")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("TEXT");
+
+                    b.Property<long?>("ModifiedById")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime?>("ModifiedOn")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Name")
+                        .IsUnique();
+
+                    b.ToTable("Profile", (string)null);
+                });
+
+            modelBuilder.Entity("BSG.Entities.ProfileAuth", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER")
+                        .HasColumnName("ProfileAuthId");
+
+                    b.Property<long?>("CreatedById")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime>("CreatedOn")
+                        .HasColumnType("TEXT");
+
+                    b.Property<long>("ElementId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<bool>("IsEnabled")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<bool>("IsVisible")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<long?>("ModifiedById")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime?>("ModifiedOn")
+                        .HasColumnType("TEXT");
+
+                    b.Property<long>("ProfileId")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ElementId");
+
+                    b.HasIndex("ProfileId", "ElementId")
+                        .IsUnique();
+
+                    b.ToTable("ProfileAuth", (string)null);
+                });
+
             modelBuilder.Entity("BSG.Entities.User", b =>
                 {
                     b.Property<long>("Id")
@@ -349,6 +427,41 @@ namespace BSG.Database.Migrations
                     b.ToTable("UserPassword", (string)null);
                 });
 
+            modelBuilder.Entity("BSG.Entities.UserProfile", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER")
+                        .HasColumnName("UserProfileId");
+
+                    b.Property<long?>("CreatedById")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime>("CreatedOn")
+                        .HasColumnType("TEXT");
+
+                    b.Property<long?>("ModifiedById")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime?>("ModifiedOn")
+                        .HasColumnType("TEXT");
+
+                    b.Property<long>("ProfileId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<long>("UserId")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProfileId");
+
+                    b.HasIndex("UserId", "ProfileId")
+                        .IsUnique();
+
+                    b.ToTable("UserProfile", (string)null);
+                });
+
             modelBuilder.Entity("BSG.Entities.Element", b =>
                 {
                     b.HasOne("BSG.Entities.Component", "Component")
@@ -371,16 +484,35 @@ namespace BSG.Database.Migrations
                     b.Navigation("ProductType");
                 });
 
+            modelBuilder.Entity("BSG.Entities.ProfileAuth", b =>
+                {
+                    b.HasOne("BSG.Entities.Element", "Element")
+                        .WithMany("ProfileAuths")
+                        .HasForeignKey("ElementId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("BSG.Entities.Profile", "Profile")
+                        .WithMany("ProfileAuths")
+                        .HasForeignKey("ProfileId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Element");
+
+                    b.Navigation("Profile");
+                });
+
             modelBuilder.Entity("BSG.Entities.UserAuth", b =>
                 {
                     b.HasOne("BSG.Entities.Element", "Element")
-                        .WithMany()
+                        .WithMany("UserAuths")
                         .HasForeignKey("ElementId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("BSG.Entities.User", "User")
-                        .WithMany()
+                        .WithMany("UserAuths")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
@@ -401,9 +533,35 @@ namespace BSG.Database.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("BSG.Entities.UserProfile", b =>
+                {
+                    b.HasOne("BSG.Entities.Profile", "Profile")
+                        .WithMany("UserProfiles")
+                        .HasForeignKey("ProfileId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("BSG.Entities.User", "User")
+                        .WithMany("UserProfiles")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Profile");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("BSG.Entities.Component", b =>
                 {
                     b.Navigation("Elements");
+                });
+
+            modelBuilder.Entity("BSG.Entities.Element", b =>
+                {
+                    b.Navigation("ProfileAuths");
+
+                    b.Navigation("UserAuths");
                 });
 
             modelBuilder.Entity("BSG.Entities.ProductType", b =>
@@ -411,9 +569,20 @@ namespace BSG.Database.Migrations
                     b.Navigation("Products");
                 });
 
+            modelBuilder.Entity("BSG.Entities.Profile", b =>
+                {
+                    b.Navigation("ProfileAuths");
+
+                    b.Navigation("UserProfiles");
+                });
+
             modelBuilder.Entity("BSG.Entities.User", b =>
                 {
                     b.Navigation("Passwords");
+
+                    b.Navigation("UserAuths");
+
+                    b.Navigation("UserProfiles");
                 });
 #pragma warning restore 612, 618
         }

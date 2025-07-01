@@ -15,6 +15,8 @@ public class Element: EntityBase, IEntityBase
     //
 
     public Component Component { get; set; } = null!;
+    public List<UserAuth> UserAuths { get; set; } = [];
+    public List<ProfileAuth> ProfileAuths { get; set; } = [];
     
     public void OnModelCreating(ModelBuilder m)
     {
@@ -45,6 +47,16 @@ public class Element: EntityBase, IEntityBase
 
             e.HasIndex(i => new { i.ComponentId, i.Code })
                 .IsUnique();
+
+            e.HasMany(x => x.UserAuths)
+                .WithOne(o => o.Element)
+                .HasForeignKey(k => k.ElementId)
+                .OnDelete(DeleteBehavior.Restrict);
+            
+            e.HasMany(x=>x.ProfileAuths)
+                .WithOne(o=>o.Element)
+                .HasForeignKey(k=>k.ElementId)
+                .OnDelete(DeleteBehavior.Restrict);
         });
     }
 }

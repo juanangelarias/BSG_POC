@@ -140,6 +140,6 @@ public class UserRepository(IMapper mapper, BsgDbContext db)
             .Include(i => i.UserProfiles)
             .FirstOrDefaultAsync(r=>r.Id == id);
 
-        return mapper.Map<UserExtendedDto>(qry);
+        return _mapper.Map<UserExtendedDto>(qry);
     }
 }

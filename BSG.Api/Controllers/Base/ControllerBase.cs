@@ -4,6 +4,7 @@ using BSG.Entities.Base;
 using BSG.Repository.Base;
 using Microsoft.AspNetCore.Mvc;
 using Serilog;
+using Error = BSG.Common.Model.Error;
 
 namespace BSG.Api.Controllers.Base;
 

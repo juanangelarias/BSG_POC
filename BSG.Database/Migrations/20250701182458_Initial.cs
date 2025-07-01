@@ -22,8 +22,7 @@ namespace BSG.Database.Migrations
                     CreatedById = table.Column<long>(type: "INTEGER", nullable: true),
                     CreatedOn = table.Column<DateTime>(type: "TEXT", nullable: false),
                     ModifiedById = table.Column<long>(type: "INTEGER", nullable: true),
-                    ModifiedOn = table.Column<DateTime>(type: "TEXT", nullable: true),
-                    Timestamp = table.Column<byte[]>(type: "BLOB", rowVersion: true, nullable: false)
+                    ModifiedOn = table.Column<DateTime>(type: "TEXT", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -41,12 +40,29 @@ namespace BSG.Database.Migrations
                     CreatedById = table.Column<long>(type: "INTEGER", nullable: true),
                     CreatedOn = table.Column<DateTime>(type: "TEXT", nullable: false),
                     ModifiedById = table.Column<long>(type: "INTEGER", nullable: true),
-                    ModifiedOn = table.Column<DateTime>(type: "TEXT", nullable: true),
-                    Timestamp = table.Column<byte[]>(type: "BLOB", rowVersion: true, nullable: false)
+                    ModifiedOn = table.Column<DateTime>(type: "TEXT", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_ProductType", x => x.ProductTypeId);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Profile",
+                columns: table => new
+                {
+                    ProfileId = table.Column<long>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    Name = table.Column<string>(type: "TEXT", maxLength: 50, nullable: false),
+                    Description = table.Column<string>(type: "TEXT", maxLength: 500, nullable: false),
+                    CreatedById = table.Column<long>(type: "INTEGER", nullable: true),
+                    CreatedOn = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    ModifiedById = table.Column<long>(type: "INTEGER", nullable: true),
+                    ModifiedOn = table.Column<DateTime>(type: "TEXT", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Profile", x => x.ProfileId);
                 });
 
             migrationBuilder.CreateTable(
@@ -68,8 +84,7 @@ namespace BSG.Database.Migrations
                     CreatedById = table.Column<long>(type: "INTEGER", nullable: true),
                     CreatedOn = table.Column<DateTime>(type: "TEXT", nullable: false),
                     ModifiedById = table.Column<long>(type: "INTEGER", nullable: true),
-                    ModifiedOn = table.Column<DateTime>(type: "TEXT", nullable: true),
-                    Timestamp = table.Column<byte[]>(type: "BLOB", rowVersion: true, nullable: false)
+                    ModifiedOn = table.Column<DateTime>(type: "TEXT", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -91,8 +106,7 @@ namespace BSG.Database.Migrations
                     CreatedById = table.Column<long>(type: "INTEGER", nullable: true),
                     CreatedOn = table.Column<DateTime>(type: "TEXT", nullable: false),
                     ModifiedById = table.Column<long>(type: "INTEGER", nullable: true),
-                    ModifiedOn = table.Column<DateTime>(type: "TEXT", nullable: true),
-                    Timestamp = table.Column<byte[]>(type: "BLOB", rowVersion: true, nullable: false)
+                    ModifiedOn = table.Column<DateTime>(type: "TEXT", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -118,8 +132,7 @@ namespace BSG.Database.Migrations
                     CreatedById = table.Column<long>(type: "INTEGER", nullable: true),
                     CreatedOn = table.Column<DateTime>(type: "TEXT", nullable: false),
                     ModifiedById = table.Column<long>(type: "INTEGER", nullable: true),
-                    ModifiedOn = table.Column<DateTime>(type: "TEXT", nullable: true),
-                    Timestamp = table.Column<byte[]>(type: "BLOB", rowVersion: true, nullable: false)
+                    ModifiedOn = table.Column<DateTime>(type: "TEXT", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -146,14 +159,107 @@ namespace BSG.Database.Migrations
                     CreatedById = table.Column<long>(type: "INTEGER", nullable: true),
                     CreatedOn = table.Column<DateTime>(type: "TEXT", nullable: false),
                     ModifiedById = table.Column<long>(type: "INTEGER", nullable: true),
-                    ModifiedOn = table.Column<DateTime>(type: "TEXT", nullable: true),
-                    Timestamp = table.Column<byte[]>(type: "BLOB", rowVersion: true, nullable: false)
+                    ModifiedOn = table.Column<DateTime>(type: "TEXT", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_UserPassword", x => x.UserPasswordId);
                     table.ForeignKey(
                         name: "FK_UserPassword_User_UserId",
+                        column: x => x.UserId,
+                        principalTable: "User",
+                        principalColumn: "UserId",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "UserProfile",
+                columns: table => new
+                {
+                    UserProfileId = table.Column<long>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    UserId = table.Column<long>(type: "INTEGER", nullable: false),
+                    ProfileId = table.Column<long>(type: "INTEGER", nullable: false),
+                    CreatedById = table.Column<long>(type: "INTEGER", nullable: true),
+                    CreatedOn = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    ModifiedById = table.Column<long>(type: "INTEGER", nullable: true),
+                    ModifiedOn = table.Column<DateTime>(type: "TEXT", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_UserProfile", x => x.UserProfileId);
+                    table.ForeignKey(
+                        name: "FK_UserProfile_Profile_ProfileId",
+                        column: x => x.ProfileId,
+                        principalTable: "Profile",
+                        principalColumn: "ProfileId",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_UserProfile_User_UserId",
+                        column: x => x.UserId,
+                        principalTable: "User",
+                        principalColumn: "UserId",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ProfileAuth",
+                columns: table => new
+                {
+                    ProfileAuthId = table.Column<long>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    ProfileId = table.Column<long>(type: "INTEGER", nullable: false),
+                    ElementId = table.Column<long>(type: "INTEGER", nullable: false),
+                    IsEnabled = table.Column<bool>(type: "INTEGER", nullable: false),
+                    IsVisible = table.Column<bool>(type: "INTEGER", nullable: false),
+                    CreatedById = table.Column<long>(type: "INTEGER", nullable: true),
+                    CreatedOn = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    ModifiedById = table.Column<long>(type: "INTEGER", nullable: true),
+                    ModifiedOn = table.Column<DateTime>(type: "TEXT", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ProfileAuth", x => x.ProfileAuthId);
+                    table.ForeignKey(
+                        name: "FK_ProfileAuth_Element_ElementId",
+                        column: x => x.ElementId,
+                        principalTable: "Element",
+                        principalColumn: "ElementId",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_ProfileAuth_Profile_ProfileId",
+                        column: x => x.ProfileId,
+                        principalTable: "Profile",
+                        principalColumn: "ProfileId",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "UserAuth",
+                columns: table => new
+                {
+                    UserAuthId = table.Column<long>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    UserId = table.Column<long>(type: "INTEGER", nullable: false),
+                    ElementId = table.Column<long>(type: "INTEGER", nullable: false),
+                    IsEnabled = table.Column<bool>(type: "INTEGER", nullable: false),
+                    IsVisible = table.Column<bool>(type: "INTEGER", nullable: false),
+                    CreatedById = table.Column<long>(type: "INTEGER", nullable: true),
+                    CreatedOn = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    ModifiedById = table.Column<long>(type: "INTEGER", nullable: true),
+                    ModifiedOn = table.Column<DateTime>(type: "TEXT", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_UserAuth", x => x.UserAuthId);
+                    table.ForeignKey(
+                        name: "FK_UserAuth_Element_ElementId",
+                        column: x => x.ElementId,
+                        principalTable: "Element",
+                        principalColumn: "ElementId",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_UserAuth_User_UserId",
                         column: x => x.UserId,
                         principalTable: "User",
                         principalColumn: "UserId",
@@ -195,9 +301,37 @@ namespace BSG.Database.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
+                name: "IX_Profile_Name",
+                table: "Profile",
+                column: "Name",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ProfileAuth_ElementId",
+                table: "ProfileAuth",
+                column: "ElementId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ProfileAuth_ProfileId_ElementId",
+                table: "ProfileAuth",
+                columns: new[] { "ProfileId", "ElementId" },
+                unique: true);
+
+            migrationBuilder.CreateIndex(
                 name: "IX_User_Username",
                 table: "User",
                 column: "Username",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_UserAuth_ElementId",
+                table: "UserAuth",
+                column: "ElementId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_UserAuth_UserId_ElementId",
+                table: "UserAuth",
+                columns: new[] { "UserId", "ElementId" },
                 unique: true);
 
             migrationBuilder.CreateIndex(
@@ -205,28 +339,51 @@ namespace BSG.Database.Migrations
                 table: "UserPassword",
                 columns: new[] { "UserId", "StartDate" },
                 unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_UserProfile_ProfileId",
+                table: "UserProfile",
+                column: "ProfileId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_UserProfile_UserId_ProfileId",
+                table: "UserProfile",
+                columns: new[] { "UserId", "ProfileId" },
+                unique: true);
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Element");
+                name: "Product");
 
             migrationBuilder.DropTable(
-                name: "Product");
+                name: "ProfileAuth");
+
+            migrationBuilder.DropTable(
+                name: "UserAuth");
 
             migrationBuilder.DropTable(
                 name: "UserPassword");
 
             migrationBuilder.DropTable(
-                name: "Component");
+                name: "UserProfile");
 
             migrationBuilder.DropTable(
                 name: "ProductType");
 
             migrationBuilder.DropTable(
+                name: "Element");
+
+            migrationBuilder.DropTable(
+                name: "Profile");
+
+            migrationBuilder.DropTable(
                 name: "User");
+
+            migrationBuilder.DropTable(
+                name: "Component");
         }
     }
 }

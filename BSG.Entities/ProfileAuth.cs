@@ -33,16 +33,6 @@ public class ProfileAuth: EntityBase, IEntityBase
 
             e.HasIndex(i => new { i.ProfileId, i.ElementId })
                 .IsUnique();
-
-            e.HasOne(o => o.Profile)
-                .WithMany()
-                .HasForeignKey(k => k.ProfileId)
-                .OnDelete(DeleteBehavior.Restrict);
-
-            e.HasOne(o => o.Element)
-                .WithMany()
-                .HasForeignKey(k => k.ElementId)
-                .OnDelete(DeleteBehavior.Restrict);
         });
     }
 }

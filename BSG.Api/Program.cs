@@ -1,6 +1,7 @@
 using System.Net;
 using AutoMapper;
 using AutoMapper.EquivalencyExpression;
+using BSG.Api.GraphQL;
 using BSG.BackEnd.Common.Model;
 using BSG.BackEnd.Services;
 using BSG.BackEnd.Services.Encryption;
@@ -57,6 +58,17 @@ public class Program
                 am.AddProfile<SqlMappingsProfile>();
             }, typeof(BsgDbContext).Assembly)
             .AddHttpContextAccessor();
+
+        builder.Services.AddGraphQLServer()
+            .RegisterDbContextFactory<BsgDbContext>()
+            .AddAuthorization()
+            .AddQueryType<Query>()
+            .AddMutationConventions()
+            .AddProjections()
+            .AddFiltering()
+            .AddSorting()
+            .AddPagingArguments();
+            
 
         #region Configs
 
@@ -186,6 +198,7 @@ public class Program
             app.UseHttpsRedirection();
             app.UseAuthorization();
             app.MapControllers();
+            app.MapGraphQL("/graphql");
 
             Log.Information("Host started");
             app.Run();

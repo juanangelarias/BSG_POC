@@ -3,14 +3,14 @@ using Microsoft.EntityFrameworkCore;
 
 namespace BSG.Entities;
 
-public class User: EntityBase, IEntityBase
+public class User : EntityBase, IEntityBase
 {
     public string? Username { get; set; }
     public string? FullName { get; set; }
     public string? Email { get; set; }
     public string? PhoneNumber { get; set; }
     public string? MobileNumber { get; set; }
-    
+
     public bool IsEnabled { get; set; }
     public bool IsEmailConfirmed { get; set; }
     public bool IsAdmin { get; set; }
@@ -19,49 +19,58 @@ public class User: EntityBase, IEntityBase
 
     public string EmailToken { get; set; } = string.Empty;
     public DateTime? EmailTokenExpiration { get; set; }
-    
-    #endregion
-    
     public List<UserPassword> Passwords { get; set; } = [];
     public List<UserAuth> UserAuths { get; set; } = [];
     public List<UserProfile> UserProfiles { get; set; } = [];
     
+    #endregion
+
     public void OnModelCreating(ModelBuilder m)
     {
-        m.Entity<User>( e =>
+        m.Entity<User>(e =>
         {
-            MapBaseEntityProperties( e );
+            MapBaseEntityProperties(e);
 
-            e.Property( p => p.Username )
-                .HasMaxLength( 250 )
+            e.Property(p => p.Username)
+                .HasMaxLength(250)
                 .IsRequired();
 
-            e.Property( p => p.FullName )
-                .HasMaxLength( 100 )
+            e.Property(p => p.FullName)
+                .HasMaxLength(100)
                 .IsRequired();
 
-            e.Property( p => p.Email )
-                .HasMaxLength( 250 )
+            e.Property(p => p.Email)
+                .HasMaxLength(250)
                 .IsRequired();
 
-            e.Property( p => p.PhoneNumber )
-                .HasMaxLength( 20 )
-                .IsRequired(  );
-            
-            e.Property( p => p.MobileNumber )
-                .HasMaxLength( 20 )
-                .IsRequired(  );
+            e.Property(p => p.PhoneNumber)
+                .HasMaxLength(20)
+                .IsRequired();
 
-            e.Property( p => p.EmailToken )
-                .HasMaxLength( 250 );
+            e.Property(p => p.MobileNumber)
+                .HasMaxLength(20)
+                .IsRequired();
 
-            e.HasIndex( i => i.Username )
+            e.Property(p => p.EmailToken)
+                .HasMaxLength(250);
+
+            e.HasIndex(i => i.Username)
                 .IsUnique();
 
-            e.HasMany( x => x.Passwords )
-                .WithOne( o => o.User )
-                .HasForeignKey( k => k.UserId )
-                .OnDelete( DeleteBehavior.Restrict );
-        } );
+            e.HasMany(x => x.Passwords)
+                .WithOne(o => o.User)
+                .HasForeignKey(k => k.UserId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            e.HasMany(x => x.UserProfiles)
+                .WithOne(o => o.User)
+                .HasForeignKey(k => k.UserId)
+                .OnDelete(DeleteBehavior.Restrict);
+            
+            e.HasMany(x=>x.UserAuths)
+                .WithOne(o=>o.User)
+                .HasForeignKey(k=>k.UserId)
+                .OnDelete(DeleteBehavior.Restrict);
+        });
     }
 }

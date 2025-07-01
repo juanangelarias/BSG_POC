@@ -25,16 +25,6 @@ public class UserProfile: EntityBase, IEntityBase
 
             e.HasIndex(i => new { i.UserId, i.ProfileId })
                 .IsUnique();
-
-            e.HasOne(o => o.User)
-                .WithMany()
-                .HasForeignKey(k => k.UserId)
-                .OnDelete(DeleteBehavior.Restrict);
-
-            e.HasOne(o => o.Profile)
-                .WithMany()
-                .HasForeignKey(k => k.ProfileId)
-                .OnDelete(DeleteBehavior.Restrict);
         });
     }
 }

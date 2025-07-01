@@ -27,16 +27,6 @@ public class UserAuth: EntityBase, IEntityBase
 
             e.HasIndex(i => new { i.UserId, i.ElementId })
                 .IsUnique();
-
-            e.HasOne(p => p.User)
-                .WithMany()
-                .HasForeignKey(k => k.UserId)
-                .OnDelete(DeleteBehavior.Restrict);
-
-            e.HasOne(p => p.Element)
-                .WithMany()
-                .HasForeignKey(k => k.ElementId)
-                .OnDelete(DeleteBehavior.Restrict);
         });
     }
 }

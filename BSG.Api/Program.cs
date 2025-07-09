@@ -50,14 +50,14 @@ public class Program
         
         // Add services to the container.
 
-        builder.Services
-            .AddAutoMapper((sp, am) =>
+        builder.Services.AddAutoMapper((sp, am) =>
             {
                 am.AddCollectionMappers();
                 am.UseEntityFrameworkCoreModel<BsgDbContext>(sp);
                 am.AddProfile<SqlMappingsProfile>();
-            }, typeof(BsgDbContext).Assembly)
-            .AddHttpContextAccessor();
+            }, typeof(BsgDbContext).Assembly);
+        
+        builder.Services.AddHttpContextAccessor();
 
         builder.Services.AddGraphQLServer()
             .RegisterDbContextFactory<BsgDbContext>()

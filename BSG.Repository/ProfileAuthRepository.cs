@@ -14,6 +14,8 @@ public interface IProfileAuthRepository : IRepositoryBase<ProfileAuth, ProfileAu
 public class ProfileAuthRepository(IMapper mapper, BsgDbContext db) 
     : RepositoryBase<ProfileAuth, ProfileAuthDto>(mapper, db), IProfileAuthRepository
 {
+    private readonly IMapper _mapper = mapper;
+
     public async Task<List<ProfileAuthDto>> GetByProfile(long profileId)
     {
         var qry = await GetQuery()
@@ -21,6 +23,6 @@ public class ProfileAuthRepository(IMapper mapper, BsgDbContext db)
             .Where(r=> r.ProfileId == profileId)
             .ToListAsync();
 
-        return mapper.Map<List<ProfileAuthDto>>(qry);
+        return _mapper.Map<List<ProfileAuthDto>>(qry);
     }
 }

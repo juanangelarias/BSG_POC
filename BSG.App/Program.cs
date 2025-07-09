@@ -4,6 +4,7 @@ using Blazored.LocalStorage;
 using Blazored.SessionStorage;
 using BSG.App.Common.ErrorHandling;
 using BSG.App.Common.Helpers;
+using BSG.App.Product.State;
 using BSG.App.User.State;
 using BSG.DataServices;
 using BSG.DataServices.Auth;
@@ -53,6 +54,8 @@ public class Program
         builder.Services
             // G
             .AddScoped<IGeneralState, GeneralState>()
+            // P
+            .AddScoped<IProductState, ProductState>()
             // R
             .AddRadzenComponents()
             .AddRadzenCookieThemeService()

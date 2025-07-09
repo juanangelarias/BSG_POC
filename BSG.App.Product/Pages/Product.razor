@@ -1,0 +1,295 @@
+﻿@page "/Product"
+@using BSG.App.Product.State
+@using BSG.Common.DTO
+
+@inject IProductState State
+
+<PageTitle>Work with Products</PageTitle>
+
+<RadzenStack Orientation="Orientation.Vertical" Gap="10px">
+    <RadzenPanel Style="border-radius: 20px">
+        <RadzenCard Variant="Variant.Outlined" class="rz-my-4">
+            <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" Gap="0.5rem">
+                <RadzenButton Icon="box_edit" Text="Set bulk mode" Visible="!_bulkMode"
+                              Click="@SetBulkMode"/>
+                <RadzenButton Icon="save" Text="Save Changes" Visible="_bulkMode"
+                              Click="@SaveBulkChanges"/>
+                <RadzenButton Icon="box" Text="Cancel bulk mode" Visible="_bulkMode"
+                              Click="@CancelBulkMode"/>
+            </RadzenStack>
+        </RadzenCard>
+    </RadzenPanel>
+        <RadzenPanel Style="border-radius: 20px">
+            <RadzenDataGrid AllowAlternatingRows="false" AllowFiltering="true" AllowPaging="false"
+                            AllowSorting="true" Data="@State.Products" EditMode="DataGridEditMode.Multiple"
+                            @ref="_productGrid" RowUpdate="@OnUpdateRow" RowCreate="@OnCreateRow" Sort="@Reset" Filter="@Reset"
+                            ColumnWidth="200px" TItem="ProductDto" Style="height: 600px" IsLoading="@_isLoading">
+                <HeaderTemplate>
+                    <RadzenButton Text="New Product" Icon="add_circle" Click="@InsertRow" 
+                                  ButtonStyle="ButtonStyle.Success"/>
+                </HeaderTemplate>
+                <Columns>
+                    <RadzenDataGridColumn Property="Id" Title="Id" Width="100px" Frozen="true"/>
+                    <RadzenDataGridColumn Property="ProductType.Name" Title="ProductType" Width="350px">
+                        <Template Context="product">
+                            <RadzenText Text="@GetProductTypeName(product)"/>
+                        </Template>
+                        <EditTemplate Context="product">
+                            <RadzenDropDown TValue="ProductTypeDto" Data="State.ProductTypes" Style="width: 95%;"
+                                            TextProperty="Name" @bind-Value="@product.ProductType"
+                                            Name="cmbProductType"/>
+                            <RadzenRequiredValidator Text="The product type is required." Component="cmbProductType"
+                                                     style="position: static" Popup="true"/>
+                        </EditTemplate>
+                    </RadzenDataGridColumn>
+                    <RadzenDataGridColumn Property="Code" Title="Code" Width="100px">
+                        <Template Context="product">
+                            <RadzenText Text="@product.Code"/>
+                        </Template>
+                        <EditTemplate Context="product">
+                            <RadzenTextBox @bind-Value="@product.Code" Style="width: 95%" Name="txtCode"/>
+                            <RadzenRequiredValidator Text="The code is required." Component="txtCode" Popup="true"/>
+                        </EditTemplate>
+                    </RadzenDataGridColumn>
+                    <RadzenDataGridColumn Property="Name" Title="Name" Width="250px">
+                        <Template Context="product">
+                            <RadzenText Text="@product.Name"/>
+                        </Template>
+                        <EditTemplate Context="product">
+                            <RadzenTextBox @bind-Value="@product.Name" Style="width: 95%" Name="txtName"/>
+                            <RadzenRequiredValidator Text="The name is required." Component="txtName" Popup="true"/>
+                        </EditTemplate>
+                    </RadzenDataGridColumn>
+                    <RadzenDataGridColumn Property="Description" Title="Description" Width="350px">
+                        <Template Context="product">
+                            <RadzenText Text="@product.Description"/>
+                        </Template>
+                        <EditTemplate Context="product">
+                            <RadzenTextBox @bind-Value="@product.Description" Style="width: 95%"/>
+                        </EditTemplate>
+                    </RadzenDataGridColumn>
+                    <RadzenDataGridColumn Context="product" Filterable="false" Sortable="false"
+                                          TextAlign="TextAlign.Right" Frozen="true"
+                                          FrozenPosition="FrozenColumnPosition.Right">
+                        <Template Context="product">
+                            <RadzenButton Icon="add_circle" ButtonStyle="ButtonStyle.Success" Variant="Variant.Flat" 
+                                          Size="ButtonSize.Medium" Shade="Shade.Lighter" 
+                                          Click="@(_ => InsertAfterRow(product))" title="Add new row after this row" 
+                                          Disabled="@(_toInsert.Any())" />
+                            <RadzenButton Icon="edit" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" 
+                                          Size="ButtonSize.Medium" class="rz-my-1 rz-ms-1" 
+                                          Click="@(_ => EditRow(product))" @onclick:stopPropagation="true" />
+                            <RadzenButton Icon="delete" ButtonStyle="ButtonStyle.Danger" Variant="Variant.Flat" 
+                                          Size="ButtonSize.Medium" Shade="Shade.Lighter" class="rz-my-1 rz-ms-1" 
+                                          Click="@(_ => DeleteRow(product))" @onclick:stopPropagation="true" />
+                        </Template>
+                        <EditTemplate Context="product">
+                            <RadzenButton Icon="check" ButtonStyle="ButtonStyle.Success" Variant="Variant.Flat" 
+                                          Size="ButtonSize.Medium" Click="@(_ => SaveRow(product))" 
+                                          aria-label="Save" Visible="!_bulkMode"/>
+                            <RadzenButton Icon="close" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" 
+                                          Size="ButtonSize.Medium" class="rz-my-1 rz-ms-1" 
+                                          Click="@(_ => CancelEdit(product))" aria-label="Cancel"
+                                          Visible="!_bulkMode"/>
+                            <RadzenButton Icon="delete" ButtonStyle="ButtonStyle.Danger" Variant="Variant.Flat" 
+                                          Size="ButtonSize.Medium" Shade="Shade.Lighter" class="rz-my-1 rz-ms-1" 
+                                          Click="@(_ => DeleteRow(product))" aria-label="Delete" 
+                                          Visible="!_bulkMode"/>
+                        </EditTemplate>
+                    </RadzenDataGridColumn>
+                </Columns>
+            </RadzenDataGrid>
+        </RadzenPanel>
+</RadzenStack>
+
+@code {
+    private bool _bulkMode;
+    private bool _isLoading;
+    private RadzenDataGrid<ProductDto> _productGrid = null!;
+    private List<ProductDto> _toInsert = [];
+    private List<ProductDto> _toUpdate = [];
+    private List<ProductDto> _beforeBulkEdit = [];    
+    
+    protected override async Task OnInitializedAsync()
+    {
+        _isLoading = true;
+        
+        await base.OnInitializedAsync();
+
+        await State.Get();
+        
+        _isLoading = false;
+    }
+
+    private void Reset()
+    {
+        _toInsert.Clear();
+        _toUpdate.Clear();
+    }
+
+    private void Reset(ProductDto product)
+    {
+        _toInsert.Remove(product);
+        _toUpdate.Remove(product);
+    }
+
+    private void SetBulkMode()
+    {
+        _isLoading = true;
+        
+        _toUpdate = State.Products;
+
+        _beforeBulkEdit = State.Products
+            .Select(s => s.GetCopy())
+            .Where(r => r != null)
+            .ToList()!;
+        
+        _productGrid.EditRows(State.Products);
+        
+        _bulkMode = true;
+        _isLoading = false;
+    }
+
+    private async Task SaveBulkChanges()
+    {
+        _isLoading = true;
+
+        _toUpdate = [];
+        foreach (var prd in State.Products)
+        {
+            prd.ProductTypeId = prd.ProductType.Id;
+            var original = _beforeBulkEdit.FirstOrDefault(f => f.Id == prd.Id);
+            if (original != null &&
+                (original.Code != prd.Code ||
+                 original.Name != prd.Name ||
+                 original.Description != prd.Description ||
+                 original.ProductType.Id != prd.ProductTypeId))
+            {
+                _toUpdate.Add(prd);
+            }
+        }
+
+        var tasks = new List<Task>();
+        if (_toUpdate.Any())
+            tasks.Add(State.UpdateMany(_toUpdate));
+
+        if (_toInsert.Any())
+            tasks.Add(State.CreateMany(_toInsert));
+
+        if (tasks.Any())
+            await Task.WhenAll(tasks);
+        
+        Reset();
+        
+        _productGrid.CancelEditRows(State.Products);
+        
+        _bulkMode = false;
+        _isLoading = false;
+    }
+
+    private void CancelBulkMode()
+    {
+        _isLoading = true;
+        
+        Reset();
+        State.Products = _beforeBulkEdit
+            .Select(s => s.GetCopy())
+            .Where(r => r != null)
+            .ToList()!;
+
+        _beforeBulkEdit = [];
+        
+        _productGrid.CancelEditRows(State.Products);
+
+        _bulkMode = false;
+        _isLoading = false;
+    }
+
+    private void OnUpdateRow(ProductDto product)
+    {
+        _isLoading = true;
+        
+        Reset(product);
+
+        State.Update(product);
+        
+        _isLoading = false;
+    }
+
+    private void OnCreateRow(ProductDto product)
+    {
+        _isLoading = true;
+        
+        State.Create(product);
+        _toInsert.Remove(product);
+        
+        _isLoading = false;
+    }
+
+    private async Task InsertAfterRow(ProductDto row)
+    {
+        if (!_productGrid.IsValid)
+            return;
+
+        var product = new ProductDto();
+        _toInsert.Add(product);
+        await _productGrid.InsertAfterRow(product, row);
+    }
+
+    private async Task EditRow(ProductDto product)
+    {
+        if (!_productGrid.IsValid)
+            return;
+        
+        _toUpdate.Add(product);
+        await _productGrid.EditRow(product);
+    }
+
+    private async Task SaveRow(ProductDto product)
+    {
+        await _productGrid.UpdateRow(product);
+    }
+
+    private void CancelEdit(ProductDto product)
+    {
+        Reset(product);
+        
+        _productGrid.CancelEditRow(product);
+    }
+
+    private async Task DeleteRow(ProductDto product)
+    {
+        Reset(product);
+
+        if (State.Products.Contains(product))
+        {
+            await State.Delete(product.Id);
+            State.Products.Remove(product);
+        }
+        else
+        {
+            _productGrid.CancelEditRow(product);
+        }
+
+        await _productGrid.Reload();
+    }
+
+    private async Task InsertRow()
+    {
+        if(!_productGrid.IsValid)
+            return;
+
+        var product = new ProductDto();
+        _toInsert.Add(product);
+
+        await _productGrid.InsertRow(product);
+    }
+
+    private string GetProductTypeName(ProductDto product)
+    {
+        // ReSharper disable once ConditionIsAlwaysTrueOrFalseAccordingToNullableAPIContract
+        return product.ProductType == null
+            ? ""
+            : product.ProductType.Name;
+    }
+}

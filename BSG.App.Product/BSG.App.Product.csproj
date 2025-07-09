@@ -12,7 +12,12 @@
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="9.0.6"/>
+        <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="9.0.7" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\BSG.App.Common\BSG.App.Common.csproj" />
+      <ProjectReference Include="..\BSG.Common\BSG.Common.csproj" />
     </ItemGroup>
 
 </Project>

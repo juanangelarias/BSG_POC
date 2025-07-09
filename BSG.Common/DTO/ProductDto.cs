@@ -19,5 +19,10 @@ public class ProductDto : DtoBase
     [Required]
     public long ProductTypeId { get; set; }
 
-    public ProductTypeDto ProductType { get; set; } = null!;
+    public ProductTypeDto? ProductType { get; set; }
+
+    public ProductDto? GetCopy()
+    {
+        return MemberwiseClone() as ProductDto;
+    }
 }

@@ -12,6 +12,7 @@
         <RadzenPanelMenuItem Text="Counter" Click="@Navigate"/>
         <RadzenPanelMenuItem Text="Weather" Click="@Navigate"/>
         <RadzenPanelMenuItem Text="Users" Click="@Navigate"/>
+        <RadzenPanelMenuItem Text="Products" Click="@Navigate"/>
     </RadzenPanelMenu>
 </div>
 
@@ -28,6 +29,9 @@
 
         switch (args.Text.ToLower())
         {
+            case "products":
+                Navigation.NavigateTo("product");
+                break;
             case "users":
                 Navigation.NavigateTo("user");
                 break;
@@ -43,16 +47,3 @@
         }
     }
 }
-
-
-
-@*@code {
-    private bool collapseNavMenu = true;
-
-    private string? NavMenuCssClass => collapseNavMenu ? "collapse" : null;
-
-    private void ToggleNavMenu()
-    {
-        collapseNavMenu = !collapseNavMenu;
-    }
-}*@

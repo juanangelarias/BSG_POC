@@ -11,7 +11,6 @@ public class RepositoryBase<TEntity, TDto>(IMapper mapper, BsgDbContext db): IRe
     where TEntity : class, IEntityBase
     where TDto : class, IDtoBase
 {
-
     public virtual async Task<TDto> CreateAsync(TDto dto)
     {
         await using var t = await db.Database.BeginTransactionAsync();

@@ -10,10 +10,13 @@ public class User : EntityBase, IEntityBase
     public string? Email { get; set; }
     public string? PhoneNumber { get; set; }
     public string? MobileNumber { get; set; }
-
+    public long? LanguageId { get; set; }
+    
     public bool IsEnabled { get; set; }
     public bool IsEmailConfirmed { get; set; }
     public bool IsAdmin { get; set; }
+
+    public Language? Language { get; set; }
 
     #region Not in DTO
 
@@ -70,6 +73,11 @@ public class User : EntityBase, IEntityBase
             e.HasMany(x=>x.UserAuths)
                 .WithOne(o=>o.User)
                 .HasForeignKey(k=>k.UserId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            e.HasOne(o => o.Language)
+                .WithMany()
+                .HasForeignKey(k => k.LanguageId)
                 .OnDelete(DeleteBehavior.Restrict);
         });
     }

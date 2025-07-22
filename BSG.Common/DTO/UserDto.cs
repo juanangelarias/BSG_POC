@@ -29,9 +29,14 @@ public class UserDto: DtoBase
     [RegularExpression(Constants.RegExpPhone, ErrorMessage = "This is not a phone number")]
     public string? MobileNumber { get; set; }
 
+    [Required( ErrorMessage = "The 'Language' field is required" )]
+    public long LanguageId { get; set; }
+
     public bool IsEnabled { get; set; }
     public bool IsEmailConfirmed { get; set; }
     
     [Required( ErrorMessage = "The 'Is Admin' field is required" )]
     public bool IsAdmin { get; set; }
+
+    public LanguageDto Language { get; set; } = null!;
 }

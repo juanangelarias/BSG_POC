@@ -78,8 +78,8 @@ public class ControllerBase<TEntity, TDto>(
         }
     }
 
-    [HttpGet("id:long")]
-    public async Task<ActionResult<Response<TDto>>> GetById(long id)
+    [HttpGet("{id:long}")]
+    public async Task<ActionResult<Response<TDto>>> GetById([FromRoute] long id)
     {
         try
         {
@@ -110,7 +110,7 @@ public class ControllerBase<TEntity, TDto>(
     }
 
     [HttpPost]
-    public async Task<ActionResult<Response<TDto>>> Create(TDto dto)
+    public async Task<ActionResult<Response<TDto>>> Create([FromBody] TDto dto)
     {
         try
         {
@@ -141,7 +141,7 @@ public class ControllerBase<TEntity, TDto>(
     }
 
     [HttpPut]
-    public async Task<ActionResult<Response<TDto>>> Update(TDto dto)
+    public async Task<ActionResult<Response<TDto>>> Update([FromBody] TDto dto)
     {
         try
         {
@@ -171,8 +171,8 @@ public class ControllerBase<TEntity, TDto>(
         }
     }
 
-    [HttpDelete("id:long")]
-    public async Task<ActionResult<Response<bool>>> Delete(long id)
+    [HttpDelete("{id:long}")]
+    public async Task<ActionResult<Response<bool>>> Delete([FromRoute] long id)
     {
         try
         {

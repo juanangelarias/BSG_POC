@@ -174,10 +174,21 @@
             tasks.Add(State.UpdateMany(_toUpdate));
 
         if (_toInsert.Any())
+        {
+            _toInsert.ForEach(f=>f.ProductTypeId = f.ProductType.Id);
             tasks.Add(State.CreateMany(_toInsert));
+        }
 
         if (tasks.Any())
             await Task.WhenAll(tasks);
+
+        if (_toInsert.Any())
+        {
+            foreach (var prd in _toInsert)
+            {
+                await _productGrid.UpdateRow(prd);
+            }
+        }
         
         Reset();
         
@@ -211,13 +222,17 @@
         
         Reset(product);
 
-        State.Update(product);
+        if(!_bulkMode)
+            State.Update(product);
         
         _isLoading = false;
     }
 
     private void OnCreateRow(ProductDto product)
     {
+        if(!_productGrid.IsValid)
+            return;
+        
         _isLoading = true;
         
         State.Create(product);
@@ -248,6 +263,8 @@
     private async Task SaveRow(ProductDto product)
     {
         await _productGrid.UpdateRow(product);
+        
+        State.CheckMissingProductType();
     }
 
     private void CancelEdit(ProductDto product)

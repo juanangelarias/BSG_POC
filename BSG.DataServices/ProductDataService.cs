@@ -48,7 +48,7 @@ public class ProductDataService
 
     public async Task<bool> CreateMany(List<ProductDto> products)
     {
-        var request = new HttpRequestMessage(HttpMethod.Post, $"{BaseUrl}/Product/createMany")
+        var request = new HttpRequestMessage(HttpMethod.Post, $"{BaseUrl}/createMany")
         {
             Content = new StringContent(JsonSerializer.Serialize(products), Encoding.UTF8, Constants.MediaType)
         };

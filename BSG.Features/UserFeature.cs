@@ -265,14 +265,15 @@ public class UserFeature(
                 componentId = item.ComponentId;
             }
             
-            var ele = cmp.Elements.FirstOrDefault(f => f.Id == item.ElementId) ?? new ElementDto();
+            var element = cmp.Elements.FirstOrDefault(f => f.Id == item.ElementId) ?? new ElementDto();
+            var detail = element.Languages.FirstOrDefault(e => e.LanguageId == user.LanguageId) ?? element.Languages.FirstOrDefault();
             
             metadata!.Details.Add(new MetadataDetail
             {
-                Code = ele.Code,
-                DisplayName = ele.DisplayName,
-                Help = ele.Help,
-                Tooltip = ele.Tooltip,
+                Code = element.Code,
+                DisplayName = detail?.DisplayName ?? "",
+                Help = detail?.Help ?? "",
+                Tooltip = detail?.Tooltip ?? "",
                 IsEnabled = item.IsEnabled,
                 IsVisible = item.IsVisible,
             });
@@ -301,8 +302,8 @@ public class UserFeature(
                     {
                         ComponentId = component.Id,
                         ElementId = element.Id,
-                        IsEnabled = auth?.IsEnabled ?? true,
-                        IsVisible = auth?.IsVisible ?? true
+                        IsEnabled = auth.IsEnabled,
+                        IsVisible = auth.IsVisible
                     });
                 }
                 else

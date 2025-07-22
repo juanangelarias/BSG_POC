@@ -16,13 +16,5 @@ public class ElementDto: DtoBase
     [MaxLength(100, ErrorMessage = "Name cannot exceed 100 characters")]
     public string Name { get; set; } = "";
     
-    [Required(ErrorMessage = "Display Name is required")]
-    [MaxLength(100, ErrorMessage = "Display Name cannot exceed 200 characters")]
-    public string DisplayName { get; set; } = "";
-    
-    [MaxLength(200, ErrorMessage = "Display Name cannot exceed 200 characters")]
-    public string Tooltip { get; set; } = "";
-    
-    [MaxLength(500, ErrorMessage = "Help cannot exceed 500 characters")]
-    public string Help { get; set; } = "";
+    public List<ElementLanguageDto> Languages { get; set; } = [];
 }

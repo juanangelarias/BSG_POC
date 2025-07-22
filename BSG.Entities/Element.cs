@@ -8,15 +8,13 @@ public class Element: EntityBase, IEntityBase
     public long ComponentId { get; set; }
     public string Code { get; set; } = "";
     public string Name { get; set; } = "";
-    public string DisplayName { get; set; } = "";
-    public string Tooltip { get; set; } = "";
-    public string Help { get; set; } = "";
     
     //
 
     public Component Component { get; set; } = null!;
     public List<UserAuth> UserAuths { get; set; } = [];
     public List<ProfileAuth> ProfileAuths { get; set; } = [];
+    public List<ElementLanguage> Languages { get; set; } = [];
     
     public void OnModelCreating(ModelBuilder m)
     {
@@ -35,16 +33,6 @@ public class Element: EntityBase, IEntityBase
                 .IsRequired()
                 .HasMaxLength(100);
 
-            e.Property(p => p.DisplayName)
-                .IsRequired()
-                .HasMaxLength(200);
-
-            e.Property(p => p.Tooltip)
-                .HasMaxLength(500);
-
-            e.Property(p => p.Help)
-                .HasMaxLength(500);
-
             e.HasIndex(i => new { i.ComponentId, i.Code })
                 .IsUnique();
 
@@ -56,6 +44,11 @@ public class Element: EntityBase, IEntityBase
             e.HasMany(x=>x.ProfileAuths)
                 .WithOne(o=>o.Element)
                 .HasForeignKey(k=>k.ElementId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            e.HasMany(x => x.Languages)
+                .WithOne(o => o.Element)
+                .HasForeignKey(k => k.ElementId)
                 .OnDelete(DeleteBehavior.Restrict);
         });
     }

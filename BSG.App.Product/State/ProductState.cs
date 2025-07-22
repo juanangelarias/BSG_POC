@@ -15,6 +15,7 @@ public interface IProductState
     Task UpdateMany(List<ProductDto> products);
     Task Delete(long productId);
     Task Get();
+    void CheckMissingProductType();
 }
 
 public class ProductState(IProductDataService productService, IProductTypeDataService productTypeService)
@@ -58,31 +59,47 @@ public class ProductState(IProductDataService productService, IProductTypeDataSe
 
     public async Task Create(ProductDto product)
     {
+        if(product.ProductType == null)
+            return;
+        
+        product.ProductTypeId = product.ProductType?.Id ?? 0;
         product.ProductType = null;
         await productService.Create(product);
+        
+        await Get();
     }
 
     public async Task CreateMany(List<ProductDto> products)
     {
         products.ForEach(f => f.ProductType = null);
         await productService.CreateMany(products);
+        
+        await Get();
     }
 
     public async Task Update(ProductDto product)
     {
         product.ProductType = null;
         await productService.Update(product);
+        
+        await Get();
     }
 
     public async Task UpdateMany(List<ProductDto> products)
     {
-        products.ForEach(f => f.ProductType = null);
-        await productService.UpdateMany(products);
+        var toSubmit = products.Select(s=> s.GetCopy()).ToList();
+        toSubmit.ForEach(f => f.ProductType = null);
+        
+        await productService.UpdateMany(toSubmit);
+
+        await Get();
     }
 
     public async Task Delete(long productId)
     {
         await productService.Delete(productId);
+        
+        await Get();
     }
 
     public async Task Get()
@@ -106,5 +123,20 @@ public class ProductState(IProductDataService productService, IProductTypeDataSe
         ProductTypes = (await productTypeService.Get())
             .OrderBy(o=>o.Name)
             .ToList();   
+    }
+
+    public void CheckMissingProductType()
+    {
+        foreach (var prd in Products.Where(r=>r.ProductType == null))
+        {
+            prd.ProductType = ProductTypes.FirstOrDefault(f => f.Id == prd.ProductTypeId);
+        }
+    }
+
+    private ProductDto GetCopy(ProductDto input)
+    {
+        var output = input.GetCopy();
+        
+        return output;
     }
 }

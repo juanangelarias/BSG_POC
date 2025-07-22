@@ -13,6 +13,10 @@ public class BsgDbContext(DbContextOptions<BsgDbContext> options, IDateConverter
     public DbSet<Component> Components { get; set; } = null!;
     // E
     public DbSet<Element> Elements { get; set; } = null!;
+
+    public DbSet<ElementLanguage> ElementLanguages { get; set; }
+    // L
+    public DbSet<Language> Languages { get; set; }
     // P
     public DbSet<Product> Products { get; set; } = null!;
     public DbSet<ProductType> ProductTypes { get; set; } = null!;

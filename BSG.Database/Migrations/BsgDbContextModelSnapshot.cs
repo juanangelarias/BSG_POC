@@ -15,7 +15,7 @@ namespace BSG.Database.Migrations
         protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
-            modelBuilder.HasAnnotation("ProductVersion", "9.0.6");
+            modelBuilder.HasAnnotation("ProductVersion", "9.0.7");
 
             modelBuilder.Entity("BSG.Entities.Component", b =>
                 {
@@ -75,16 +75,6 @@ namespace BSG.Database.Migrations
                     b.Property<DateTime>("CreatedOn")
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("DisplayName")
-                        .IsRequired()
-                        .HasMaxLength(200)
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Help")
-                        .IsRequired()
-                        .HasMaxLength(500)
-                        .HasColumnType("TEXT");
-
                     b.Property<long?>("ModifiedById")
                         .HasColumnType("INTEGER");
 
@@ -96,6 +86,49 @@ namespace BSG.Database.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("TEXT");
 
+                    b.HasKey("Id");
+
+                    b.HasIndex("ComponentId", "Code")
+                        .IsUnique();
+
+                    b.ToTable("Element", (string)null);
+                });
+
+            modelBuilder.Entity("BSG.Entities.ElementLanguage", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER")
+                        .HasColumnName("ElementLanguageId");
+
+                    b.Property<long?>("CreatedById")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime>("CreatedOn")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("DisplayName")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("TEXT");
+
+                    b.Property<long>("ElementId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Help")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("TEXT");
+
+                    b.Property<long>("LanguageId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<long?>("ModifiedById")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime?>("ModifiedOn")
+                        .HasColumnType("TEXT");
+
                     b.Property<string>("Tooltip")
                         .IsRequired()
                         .HasMaxLength(500)
@@ -103,10 +136,49 @@ namespace BSG.Database.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ComponentId", "Code")
+                    b.HasIndex("LanguageId");
+
+                    b.HasIndex("ElementId", "LanguageId")
                         .IsUnique();
 
-                    b.ToTable("Element", (string)null);
+                    b.ToTable("ElementLanguage", (string)null);
+                });
+
+            modelBuilder.Entity("BSG.Entities.Language", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER")
+                        .HasColumnName("LanguageId");
+
+                    b.Property<string>("Code")
+                        .IsRequired()
+                        .HasMaxLength(4)
+                        .HasColumnType("TEXT");
+
+                    b.Property<long?>("CreatedById")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime>("CreatedOn")
+                        .HasColumnType("TEXT");
+
+                    b.Property<long?>("ModifiedById")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime?>("ModifiedOn")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Code")
+                        .IsUnique();
+
+                    b.ToTable("Language", (string)null);
                 });
 
             modelBuilder.Entity("BSG.Entities.Product", b =>
@@ -313,6 +385,9 @@ namespace BSG.Database.Migrations
                     b.Property<bool>("IsEnabled")
                         .HasColumnType("INTEGER");
 
+                    b.Property<long?>("LanguageId")
+                        .HasColumnType("INTEGER");
+
                     b.Property<string>("MobileNumber")
                         .IsRequired()
                         .HasMaxLength(20)
@@ -335,6 +410,8 @@ namespace BSG.Database.Migrations
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("LanguageId");
 
                     b.HasIndex("Username")
                         .IsUnique();
@@ -473,6 +550,25 @@ namespace BSG.Database.Migrations
                     b.Navigation("Component");
                 });
 
+            modelBuilder.Entity("BSG.Entities.ElementLanguage", b =>
+                {
+                    b.HasOne("BSG.Entities.Element", "Element")
+                        .WithMany("Languages")
+                        .HasForeignKey("ElementId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("BSG.Entities.Language", "Language")
+                        .WithMany()
+                        .HasForeignKey("LanguageId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Element");
+
+                    b.Navigation("Language");
+                });
+
             modelBuilder.Entity("BSG.Entities.Product", b =>
                 {
                     b.HasOne("BSG.Entities.ProductType", "ProductType")
@@ -501,6 +597,16 @@ namespace BSG.Database.Migrations
                     b.Navigation("Element");
 
                     b.Navigation("Profile");
+                });
+
+            modelBuilder.Entity("BSG.Entities.User", b =>
+                {
+                    b.HasOne("BSG.Entities.Language", "Language")
+                        .WithMany()
+                        .HasForeignKey("LanguageId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.Navigation("Language");
                 });
 
             modelBuilder.Entity("BSG.Entities.UserAuth", b =>
@@ -559,6 +665,8 @@ namespace BSG.Database.Migrations
 
             modelBuilder.Entity("BSG.Entities.Element", b =>
                 {
+                    b.Navigation("Languages");
+
                     b.Navigation("ProfileAuths");
 
                     b.Navigation("UserAuths");

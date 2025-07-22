@@ -21,8 +21,10 @@ public class ProductDto : DtoBase
 
     public ProductTypeDto? ProductType { get; set; }
 
-    public ProductDto? GetCopy()
+    public ProductDto GetCopy()
     {
-        return MemberwiseClone() as ProductDto;
+        var output = MemberwiseClone() as ProductDto;
+
+        return output!;
     }
 }

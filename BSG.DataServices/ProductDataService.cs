@@ -16,6 +16,7 @@ public interface IProductDataService : IDataServiceBase<ProductDto>
     Task<List<ProductDto>> GetExtended();
     Task<bool> CreateMany(List<ProductDto> products);
     Task<bool> UpdateMany(List<ProductDto> products);
+    Task<List<ProductDto>> Search(string filter);
 }
 
 public class ProductDataService
@@ -30,6 +31,25 @@ public class ProductDataService
     public async Task<List<ProductDto>> GetExtended()
     {
         var request = new HttpRequestMessage(HttpMethod.Get, $"{BaseUrl}/GetExtended");
+        var response = await GetResponse(request);
+
+        if (response == null)
+            return [];
+
+        var result = await response.Content.ReadFromJsonAsync<Response<List<ProductDto>>>();
+
+        if (result is { Success: true })
+            return result.Content ?? [];
+
+        if (result?.Error?.Code =="400")
+            throw new NotFoundException(result.Error.Message);
+
+        throw new DataServiceException("An error has occurred please retry later");
+    }
+    
+    public async Task<List<ProductDto>> Search(string filter)
+    {
+        var request = new HttpRequestMessage(HttpMethod.Get, $"{BaseUrl}/Search/{filter}");
         var response = await GetResponse(request);
 
         if (response == null)

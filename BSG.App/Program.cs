@@ -9,6 +9,7 @@ using BSG.App.User.State;
 using BSG.DataServices;
 using BSG.DataServices.Auth;
 using BSG.DataServices.Helper;
+using BSG.Notification.State;
 using BSG.States;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.Web;
@@ -73,6 +74,10 @@ public class Program
             .AddScoped<IElementDataService, ElementDataService>()
             // G
             .AddScoped<IGeneralState, GeneralState>()
+            // N
+            .AddScoped<INotificationDataService, NotificationDataService>()
+            .AddScoped<INotificationPropertyDataService, NotificationPropertyDataService>()
+            .AddScoped<INotificationState, NotificationState>()
             // P
             .AddScoped<IProductDataService, ProductDataService>()
             .AddScoped<IProductTypeDataService, ProductTypeDataService>()

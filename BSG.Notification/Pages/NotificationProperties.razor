@@ -1,0 +1,180 @@
+﻿@inject IGeneralState GeneralState
+@inject INotificationState State
+
+@inherits BSGComponentBase
+
+<RadzenPanel Title="Notification Properties">
+    <RadzenColumn Size="12">
+        <RadzenStack Orientation="Orientation.Vertical" Gap="0.5rem">
+            @if (!IsLoading)
+            {
+                <RadzenRow>
+                    <RadzenDataGrid TItem="NotificationPropertyDefinitionDto" IsLoading="IsLoading" @ref="_grid" 
+                                 Sort="@ShowLoading" Page="@ShowLoading" Group="@ShowLoading" Filter="@ShowLoading"
+                                 Data="@State.PropertyDefinitions" RowCreate="@(arg => OnCreateRow(arg))" 
+                                 RowUpdate="@(arg => OnUpdateRow(arg))">
+                        <HeaderTemplate>
+                            <RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.Start">
+                                <RadzenButton Icon="add" Click="@InsertRow" Text="Add"/>
+                            </RadzenStack>
+                        </HeaderTemplate>
+                        <Columns>
+                            <RadzenDataGridColumn TItem="NotificationPropertyDefinitionDto" Title="Name"
+                                                  Property="Name" SortOrder="SortOrder.Ascending" width="200px">
+                                <Template Context="prop">
+                                    <RadzenText Text="@prop.Name"/>
+                                </Template>
+                                <EditTemplate Context="prop">
+                                    <RadzenTextBox Text="@prop.Name"/>
+                                </EditTemplate>
+                            </RadzenDataGridColumn>
+                            <RadzenDataGridColumn TItem="NotificationPropertyDefinitionDto" Title="Type"
+                                                  Property="Type" SortOrder="SortOrder.Ascending" width="150px">
+                                <Template Context="prop">
+                                    <RadzenText Text="@prop.Type"/>
+                                </Template>
+                                <EditTemplate Context="prop">
+                                    <RadzenDropDown TValue="string" Data="@State.PropertyTypes" TextProperty="Name"
+                                                    ValueProperty="Name" @bind-Value="@prop.Type"/>
+                                </EditTemplate>
+                            </RadzenDataGridColumn>
+                            <RadzenDataGridColumn TItem="NotificationPropertyDefinitionDto" Title="Actions"
+                                                  Sortable="false" width="75px" TextAlign="TextAlign.Right"
+                                                  Filterable="false" Resizable="false" Frozen="true"
+                                                  FrozenPosition="FrozenColumnPosition.Right">
+                                <Template Context="prop">
+                                    <RadzenStack Orientation="Orientation.Horizontal" Gap="0.5rem">
+                                        <RadzenButton Icon="edit" ButtonStyle="ButtonStyle.Primary"
+                                                      Variant="Variant.Flat" Size="ButtonSize.Small"
+                                                      Click="@(_ => EditRow(prop))" @onclick:stopPropagation="true"/>
+                                        <RadzenButton Icon="delete" ButtonStyle="ButtonStyle.Danger"
+                                                      Variant="Variant.Flat" Size="ButtonSize.Small"
+                                                      Click="@(_ => DeleteRow(prop))" @onclick:stopPropagation="true"/>
+                                    </RadzenStack>
+                                </Template>
+                                <EditTemplate Context="prop">
+                                    <RadzenStack Orientation="Orientation.Horizontal" Gap="0.5rem">
+                                        <RadzenButton Icon="check" ButtonStyle="ButtonStyle.Success"
+                                                      Variant="Variant.Flat" Size="ButtonSize.Small"
+                                                      Click="@(_ => SaveRow(prop))">
+                                        </RadzenButton>
+                                        <RadzenButton Icon="close" ButtonStyle="ButtonStyle.Light"
+                                                      Variant="Variant.Flat" Size="ButtonSize.Small"
+                                                      Click="@(_ => CancelEdit(prop))">
+                                        </RadzenButton>
+                                    </RadzenStack>
+                                </EditTemplate>
+                            </RadzenDataGridColumn>
+                        </Columns>
+                    </RadzenDataGrid>
+                </RadzenRow>
+            }
+            else
+            {
+                <RadzenRow JustifyContent="JustifyContent.Center" AlignItems="AlignItems.Center">
+                    <RadzenStack Orientation="Orientation.Vertical" Gap="1rem">
+                        <RadzenRow JustifyContent="JustifyContent.Center" AlignItems="AlignItems.Center">
+                            <RadzenColumn Size="4">
+                                <BusyDialog Message="Loading..."/>
+                            </RadzenColumn>
+                        </RadzenRow>
+                    </RadzenStack>
+                </RadzenRow>
+            }
+        </RadzenStack>
+    </RadzenColumn>
+</RadzenPanel>
+
+
+@code {
+    private RadzenDataGrid<NotificationPropertyDefinitionDto> _grid = null!;
+    private List<NotificationPropertyDefinitionDto> _propsToInsert = [];
+    private List<NotificationPropertyDefinitionDto> _propsToUpdate = [];
+
+    protected override async Task OnParametersSetAsync()
+    {
+        await base.OnParametersSetAsync();
+
+        await ShowLoading();
+        await State.GetPropertyDefinitions();
+    }
+
+    private void Reset()
+    {
+        _propsToInsert = [];
+        _propsToUpdate = [];
+    }
+
+    private void Reset(NotificationPropertyDefinitionDto prop)
+    {
+        _propsToInsert.Remove(prop);
+        _propsToUpdate.Remove(prop);
+    }
+
+    private async Task OnUpdateRow(object obj)
+    {
+        var prop = (NotificationPropertyDefinitionDto)obj;
+        
+        Reset(prop);
+        var response = await State.SavePropertyDefinition(prop);
+
+        if(response != null && prop.Id == 0)
+            prop.Id = response.Id;
+    }
+
+    private async Task OnCreateRow(object obj)
+    {
+        var prop = (NotificationPropertyDefinitionDto)obj;
+        
+        await ShowLoading();
+        
+        var response = await State.SavePropertyDefinition(prop);
+        if (response != null && prop.Id == 0)
+            prop.Id = response.Id;
+    }
+
+    private async Task InsertRow()
+    {
+        await ShowLoading();
+        var prop = new NotificationPropertyDefinitionDto
+        {
+            Id = 0
+
+        };
+        _propsToInsert.Add(prop);
+        await _grid.InsertRow(prop);
+    }
+
+    private async Task EditRow(NotificationPropertyDefinitionDto prop)
+    {
+        await ShowLoading();
+        Reset();
+        _propsToUpdate.Add(prop);
+        await _grid.EditRow(prop);
+    }
+
+    private async Task DeleteRow(NotificationPropertyDefinitionDto prop)
+    {
+        await ShowLoading();
+        Reset(prop);
+        await State.DeletePropertyDefinition(prop.Id);
+
+        await _grid.Reload();
+    }
+
+    private async Task SaveRow(NotificationPropertyDefinitionDto prop)
+    {
+        await ShowLoading();
+        await _grid.UpdateRow(prop);
+        await State.GetPropertyDefinitions();
+    }
+
+    private async Task CancelEdit(NotificationPropertyDefinitionDto prop)
+    {
+        await ShowLoading();
+        Reset(prop);
+        _grid.CancelEditRow(prop);
+        await State.GetPropertyDefinitions();
+    }
+
+}

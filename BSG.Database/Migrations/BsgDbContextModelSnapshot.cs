@@ -181,6 +181,182 @@ namespace BSG.Database.Migrations
                     b.ToTable("Language", (string)null);
                 });
 
+            modelBuilder.Entity("BSG.Entities.Notification", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER")
+                        .HasColumnName("NotificationId");
+
+                    b.Property<string>("Body")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("TEXT");
+
+                    b.Property<long?>("CreatedById")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime>("CreatedOn")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("EmissionTime")
+                        .HasColumnType("TEXT");
+
+                    b.Property<long?>("ModifiedById")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime?>("ModifiedOn")
+                        .HasColumnType("TEXT");
+
+                    b.Property<bool>("SendEmail")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<bool>("SendSms")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("SenderEmail")
+                        .IsRequired()
+                        .HasMaxLength(150)
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("SenderEmail", "EmissionTime");
+
+                    b.ToTable("Notification", (string)null);
+                });
+
+            modelBuilder.Entity("BSG.Entities.NotificationProperty", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER")
+                        .HasColumnName("NotificationPropertyId");
+
+                    b.Property<long?>("CreatedById")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime>("CreatedOn")
+                        .HasColumnType("TEXT");
+
+                    b.Property<long?>("ModifiedById")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime?>("ModifiedOn")
+                        .HasColumnType("TEXT");
+
+                    b.Property<long>("NotificationId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<long>("NotificationPropertyDefinitionId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("TextValue")
+                        .IsRequired()
+                        .HasMaxLength(150)
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("NotificationId");
+
+                    b.HasIndex("NotificationPropertyDefinitionId");
+
+                    b.ToTable("NotificationProperty", (string)null);
+                });
+
+            modelBuilder.Entity("BSG.Entities.NotificationPropertyDefinition", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER")
+                        .HasColumnName("NotificationPropertyDefinitionId");
+
+                    b.Property<long?>("CreatedById")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime>("CreatedOn")
+                        .HasColumnType("TEXT");
+
+                    b.Property<long?>("ModifiedById")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime?>("ModifiedOn")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Type")
+                        .IsRequired()
+                        .HasMaxLength(15)
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Name")
+                        .IsUnique();
+
+                    b.ToTable("NotificationPropertyDefinition", (string)null);
+                });
+
+            modelBuilder.Entity("BSG.Entities.NotificationRecipient", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER")
+                        .HasColumnName("NotificationRecipientId");
+
+                    b.Property<long?>("CreatedById")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime>("CreatedOn")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasMaxLength(250)
+                        .HasColumnType("TEXT");
+
+                    b.Property<long?>("ModifiedById")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime?>("ModifiedOn")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(150)
+                        .HasColumnType("TEXT");
+
+                    b.Property<long>("NotificationId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("PhoneNumber")
+                        .HasMaxLength(20)
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime?>("Snoozed")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("NotificationId", "Email", "Snoozed");
+
+                    b.ToTable("NotificationRecipient", (string)null);
+                });
+
             modelBuilder.Entity("BSG.Entities.Product", b =>
                 {
                     b.Property<long>("Id")
@@ -569,6 +745,36 @@ namespace BSG.Database.Migrations
                     b.Navigation("Language");
                 });
 
+            modelBuilder.Entity("BSG.Entities.NotificationProperty", b =>
+                {
+                    b.HasOne("BSG.Entities.Notification", "Notification")
+                        .WithMany("Properties")
+                        .HasForeignKey("NotificationId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("BSG.Entities.NotificationPropertyDefinition", "Property")
+                        .WithMany()
+                        .HasForeignKey("NotificationPropertyDefinitionId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Notification");
+
+                    b.Navigation("Property");
+                });
+
+            modelBuilder.Entity("BSG.Entities.NotificationRecipient", b =>
+                {
+                    b.HasOne("BSG.Entities.Notification", "Notification")
+                        .WithMany("Recipients")
+                        .HasForeignKey("NotificationId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Notification");
+                });
+
             modelBuilder.Entity("BSG.Entities.Product", b =>
                 {
                     b.HasOne("BSG.Entities.ProductType", "ProductType")
@@ -670,6 +876,13 @@ namespace BSG.Database.Migrations
                     b.Navigation("ProfileAuths");
 
                     b.Navigation("UserAuths");
+                });
+
+            modelBuilder.Entity("BSG.Entities.Notification", b =>
+                {
+                    b.Navigation("Properties");
+
+                    b.Navigation("Recipients");
                 });
 
             modelBuilder.Entity("BSG.Entities.ProductType", b =>

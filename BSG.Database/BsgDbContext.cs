@@ -17,6 +17,11 @@ public class BsgDbContext(DbContextOptions<BsgDbContext> options, IDateConverter
     public DbSet<ElementLanguage> ElementLanguages { get; set; }
     // L
     public DbSet<Language> Languages { get; set; }
+    // N
+    public DbSet<Notification> Notifications { get; set; } = null!;
+    public DbSet<NotificationProperty> NotificationProperties { get; set; } = null!;
+    public DbSet<NotificationPropertyDefinition> NotificationPropertyDefinitions { get; set; } = null!;
+    public DbSet<NotificationRecipient> NotificationRecipients { get; set; } = null!;
     // P
     public DbSet<Product> Products { get; set; } = null!;
     public DbSet<ProductType> ProductTypes { get; set; } = null!;

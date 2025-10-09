@@ -1,0 +1,51 @@
+﻿@page "/ProductDrop"
+
+@using BSG.Common.DTO
+@using BSG.DataServices
+
+@inject IProductDataService ProductService
+
+<RadzenCard>
+    <RadzenColumn Size="12">
+        <RadzenRow>
+            <RadzenFormField Text="Product" Variant="Variant.Text" Style="width: 100%;">
+                <RadzenDropDown @bind-SearchText=_searchText
+                                AllowFiltering="true"
+                                Data=@_products
+                                TextProperty="@nameof(ProductDto.Name)"
+                                ValueProperty="@nameof(ProductDto.Id)"
+                                @bind-Value=_productId
+                                AllowClear="true"
+                                Style="width: 100%; max-width: 400px;"
+                                Name="DropDownFiltering"
+                                LoadData=@LoadData/>
+            </RadzenFormField>
+        </RadzenRow>
+    </RadzenColumn>
+</RadzenCard>
+
+@code {
+    private string _searchText = "";
+    private long _productId;
+    private List<ProductDto> _products = [];
+
+    protected override async Task OnParametersSetAsync()
+    {
+        await base.OnParametersSetAsync();
+
+        _products = [];
+    }
+
+    private async Task LoadData(LoadDataArgs args)
+    {
+        var filter = args.Filter ?? "";
+        if (string.IsNullOrEmpty(filter))
+        {
+            _products = [];
+            return;
+        }
+
+        _products = await ProductService.Search(filter);
+    }
+
+}

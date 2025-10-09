@@ -2,6 +2,7 @@
 using System.Security.Claims;
 using System.Text;
 using BSG.BackEnd.Common.Model;
+using BSG.Common.Constants;
 using BSG.Common.DTO;
 using BSG.Common.Model;
 using Microsoft.IdentityModel.Tokens;
@@ -81,7 +82,7 @@ public class JwtUtils : IJwtUtils
         };
 
         if (user.IsAdmin)
-            claims.Add(new Claim(ClaimTypes.Role, Constants.RoleAdmin));
+            claims.Add(new Claim(ClaimTypes.Role, GeneralConstants.RoleAdmin));
         
         return claims;
     }

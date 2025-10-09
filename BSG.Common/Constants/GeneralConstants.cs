@@ -1,6 +1,6 @@
-﻿namespace BSG.Common.Model;
+﻿namespace BSG.Common.Constants;
 
-public class Constants
+public class GeneralConstants
 {
     // Roles
     public const string RoleAdmin = "Admin";

@@ -15,6 +15,14 @@ public class SqlMappingsProfile: Profile
         CreateMap<Component, ComponentDto>().ReverseMap();
         // E
         CreateMap<Element, ElementDto>().ReverseMap();
+        CreateMap<ElementLanguage, ElementLanguageDto>().ReverseMap();
+        // L
+        CreateMap<Language, LanguageDto>().ReverseMap();
+        // N
+        CreateMap<Notification, NotificationDto>().ReverseMap();
+        CreateMap<NotificationProperty, NotificationPropertyDto>().ReverseMap();
+        CreateMap<NotificationPropertyDefinition, NotificationPropertyDefinitionDto>().ReverseMap();
+        CreateMap<NotificationRecipient, NotificationRecipientDto>().ReverseMap();
         // P
         CreateMap<Product, ProductDto>().ReverseMap();
         CreateMap<ProductType, ProductTypeDto>().ReverseMap();
@@ -25,6 +33,6 @@ public class SqlMappingsProfile: Profile
         CreateMap<UserAuth, UserAuthDto>().ReverseMap();
         CreateMap<User, UserExtendedDto>().ReverseMap();
         CreateMap<UserPassword, UserPasswordDto>().ReverseMap();
-        CreateMap<UserProfile, UserPasswordDto>().ReverseMap();
+        CreateMap<UserProfile, UserProfile>().ReverseMap();
     }
 }

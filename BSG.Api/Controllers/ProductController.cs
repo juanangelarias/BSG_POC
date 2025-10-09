@@ -47,6 +47,37 @@ public class ProductController(IWebHostEnvironment environment, IProductReposito
         }
     }
 
+    [HttpGet("search/{argument}")]
+    public async Task<ActionResult<Response<List<ProductDto>>>> Search([FromRoute] string argument)
+    {
+        try
+        {
+            var response = new Response<List<ProductDto>>
+            {
+                Content = (await repository.Search(argument)).ToList(),
+                Error = null
+            };
+
+            return Ok(response);
+        }
+        catch (Exception exception)
+        {
+            Log.Fatal(exception, "{Message}", exception.Message);
+            return Ok(new Response<List<ProductDto>>
+            {
+                Content = null,
+                Error = new Error
+                {
+                    Code = "500",
+                    Type = "Internal Server Error",
+                    Message = _environment.IsProduction()
+                        ? "An error has occurred. Please retry later. If the problem persists, contact support."
+                        : exception.Message
+                }
+            });
+        }
+    }
+
     [HttpPost("createMany")]
     public async Task<ActionResult<Response<List<ProductDto>>>> CreateMany([FromBody] List<ProductDto> products)
     {
@@ -55,6 +86,38 @@ public class ProductController(IWebHostEnvironment environment, IProductReposito
             var response = new Response<List<ProductDto>>
             {
                 Content = (await repository.CreateManyAsync(products)).ToList(),
+                Error = null
+            };
+
+            return Ok(response);
+        }
+        catch (Exception exception)
+        {
+            Log.Fatal(exception, "{Message}", exception.Message);
+            return Ok(new Response<List<ProductDto>>
+            {
+                Content = null,
+                Error = new Error
+                {
+                    Code = "500",
+                    Type = "Internal Server Error",
+                    Message = _environment.IsProduction()
+                        ? "An error has occurred. Please retry later. If the problem persists, contact support."
+                        : exception.Message
+                }
+            });
+        }
+    }
+
+    [HttpPost("seed")]
+    public async Task<ActionResult<Response<bool>>> Seed()
+    {
+        try
+        {
+            await repository.SeedProducts();
+            var response = new Response<bool>
+            {
+                Content = true,
                 Error = null
             };
 

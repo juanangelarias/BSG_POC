@@ -21,6 +21,7 @@
       <ProjectReference Include="..\BSG.App.Product\BSG.App.Product.csproj" />
       <ProjectReference Include="..\BSG.App.User\BSG.App.User.csproj" />
       <ProjectReference Include="..\BSG.DataServices\BSG.DataServices.csproj" />
+      <ProjectReference Include="..\BSG.Notification\BSG.Notification.csproj" />
       <ProjectReference Include="..\BSG.States\BSG.States.csproj" />
     </ItemGroup>
 

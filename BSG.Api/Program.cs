@@ -160,6 +160,10 @@ public class Program
             .AddScoped<IJwtUtils, JwtUtils>()
             // M
             .AddScoped<IMailService, MailService>()
+            // M
+            .AddScoped<INotificationRepository, NotificationRepository>()
+            .AddScoped<INotificationPropertyRepository, NotificationPropertyRepository>()
+            .AddScoped<INotificationPropertyDefinitionRepository, NotificationPropertyDefinitionRepository>()
             // P
             .AddScoped<IProductRepository, ProductRepository>()
             .AddScoped<IProductTypeRepository, ProductTypeRepository>()

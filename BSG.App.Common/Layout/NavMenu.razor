@@ -13,6 +13,7 @@
         <RadzenPanelMenuItem Text="Weather" Click="@Navigate"/>
         <RadzenPanelMenuItem Text="Users" Click="@Navigate"/>
         <RadzenPanelMenuItem Text="Products" Click="@Navigate"/>
+        <RadzenPanelMenuItem Text="Notifications" Click="@Navigate"/>
     </RadzenPanelMenu>
 </div>
 
@@ -40,6 +41,9 @@
                 break;
             case "weather":
                 Navigation.NavigateTo("weather");
+                break;
+            case "notifications":
+                Navigation.NavigateTo("NotificationAdmin");
                 break;
             default:
                 Navigation.NavigateTo("/");

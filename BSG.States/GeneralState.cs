@@ -1,4 +1,5 @@
-﻿using BSG.Common.DTO;
+﻿using BSG.Common.Constants;
+using BSG.Common.DTO;
 using BSG.Common.Model;
 using BSG.States.Base;
 
@@ -161,7 +162,7 @@ public class GeneralState: StateBase, IGeneralState
         Username = username;
         UserFullName = userFullName;
         Roles = roles ?? [];
-        IsAdmin = Roles.Contains(Constants.RoleAdmin);
+        IsAdmin = Roles.Contains(GeneralConstants.RoleAdmin);
     }
 
     public void Clear()

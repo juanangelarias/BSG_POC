@@ -11,8 +11,8 @@ public class NotificationProperty: EntityBase, IEntityBase
     public string TextValue { get; set; } = null!;
     
     
-    public Notification Notification { get; set; } = null!;
-    public NotificationPropertyDefinition Property { get; set; } = null!;
+    //public virtual Notification Notification { get; set; } = null!;
+    public virtual NotificationPropertyDefinition Property { get; set; } = null!;
     
     public void OnModelCreating(ModelBuilder m)
     {

@@ -12,8 +12,8 @@ public class Notification: EntityBase, IEntityBase
     public bool SendEmail { get; set; }
     public bool SendSms { get; set; }
     
-    public List<NotificationProperty> Properties { get; set; } = [];
-    public List<NotificationRecipient> Recipients { get; set; } = [];
+    public virtual List<NotificationProperty> Properties { get; set; } = [];
+    public virtual List<NotificationRecipient> Recipients { get; set; } = [];
     
     public void OnModelCreating(ModelBuilder m)
     {
@@ -36,12 +36,12 @@ public class Notification: EntityBase, IEntityBase
             e.HasIndex(i => new { i.SenderEmail, i.EmissionTime });
 
             e.HasMany(x => x.Properties)
-                .WithOne(o => o.Notification)
+                .WithOne()
                 .HasForeignKey(k => k.NotificationId)
                 .OnDelete(DeleteBehavior.Restrict);
             
             e.HasMany(x=>x.Recipients)
-                .WithOne(o=>o.Notification)
+                .WithOne()
                 .HasForeignKey(k=>k.NotificationId)
                 .OnDelete(DeleteBehavior.Restrict);
         });

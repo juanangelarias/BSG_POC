@@ -1,4 +1,5 @@
-﻿using BSG.Common.DTO;
+﻿using BSG.Api.Controllers.Base;
+using BSG.Common.DTO;
 using BSG.Common.Model;
 using BSG.Entities;
 using BSG.Repository;
@@ -6,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Serilog;
 using Error = BSG.Common.Model.Error;
 
-namespace BSG.Api.Controllers.Base;
+namespace BSG.Api.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
@@ -15,16 +16,21 @@ public class NotificationController(
     INotificationRepository repository)
     : ControllerBase<Notification, NotificationDto>(environment, repository)
 {
-    [HttpGet("GetByEmail/{email:alpha}")]
-    public async Task<ActionResult<List<NotificationDto>>> GetNotificationByEmail(string email)
+    private readonly IWebHostEnvironment _environment = environment;
+    
+    [HttpGet("GetByEmail/{user:alpha}/{server:alpha}/{ending:alpha}")]
+    public async Task<ActionResult<List<NotificationDto>>> GetNotificationByEmail(string user, string server, string ending)
     {
         try
         {
+            var email = $"{user}@{server}.{ending}";
+
             var response = new Response<List<NotificationDto>>
             {
                 Content = (await repository.GetByEmail(email)).ToList(),
                 Error = null
             };
+            
             return Ok(response);
         }
         catch (Exception exception)
@@ -37,7 +43,7 @@ public class NotificationController(
                 {
                     Code = "500",
                     Type = "Internal Server Error",
-                    Message = environment.IsProduction()
+                    Message = _environment.IsProduction()
                         ? "An error has occurred. Please retry later. If the problem persists, contact support."
                         : exception.Message
                 }

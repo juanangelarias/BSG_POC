@@ -131,7 +131,7 @@ public class DataServiceBase<T>(
 
         var response = await GetResponse(request);
         
-        var result = await response!.Content.ReadFromJsonAsync<Response<string>>();
+        var result = await response!.Content.ReadFromJsonAsync<Response<bool>>();
         
         if(result == null)
             throw new DataServiceException("An error has occurred please retry later");

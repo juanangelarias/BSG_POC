@@ -1,18 +1,16 @@
 ﻿@page "/NotificationAdmin"
 
-<RadzenColumn Size="12">
-    <RadzenRow>
-        <RadzenStack Orientation="Orientation.Horizontal" Gap="1rem" JustifyContent="JustifyContent.SpaceBetween">
-            <RadzenColumn Size="7">
-                
-            </RadzenColumn>
-            <RadzenColumn Size="5">
-                <NotificationProperties/>
-            </RadzenColumn>
-        </RadzenStack>
+<RadzenColumn Size="12" Style="height: 100%;">
+    <RadzenRow JustifyContent="JustifyContent.SpaceBetween" Gap="1rem">
+        <RadzenColumn Size="7">
+            <Notifications/>
+        </RadzenColumn>
+        <RadzenColumn Size="5">
+            <NotificationProperties/>
+        </RadzenColumn>
     </RadzenRow>
 </RadzenColumn>
 
 @code {
-    
+
 }

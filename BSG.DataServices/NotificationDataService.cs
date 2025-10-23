@@ -10,6 +10,7 @@ namespace BSG.DataServices;
 
 public interface INotificationDataService: IDataServiceBase<NotificationDto>
 {
+    Task<List<NotificationDto>> GetByEmail(string email);
 }
 
 public class NotificationDataService: DataServiceBase<NotificationDto>, INotificationDataService
@@ -22,7 +23,9 @@ public class NotificationDataService: DataServiceBase<NotificationDto>, INotific
     
     public async Task<List<NotificationDto>> GetByEmail(string email)
     {
-        var request = new HttpRequestMessage(HttpMethod.Get, $"{BaseUrl}/GetByEmail/{email}");
+        var user = email.Split("@");
+        var server = user[1].Split(".");
+        var request = new HttpRequestMessage(HttpMethod.Get, $"{BaseUrl}/GetByEmail/{user[0]}/{server[0]}/{server[1]}/");
         var response = await GetResponse(request);
 
         if (response == null)

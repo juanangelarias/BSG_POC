@@ -11,6 +11,6 @@ public class NotificationDto: DtoBase
     public bool SendEmail { get; set; }
     public bool SendSms { get; set; }
     
-    public List<NotificationRecipientDto> Properties { get; set; } = [];
+    public List<NotificationPropertyDto> Properties { get; set; } = [];
     public List<NotificationRecipientDto> Recipients { get; set; } = [];
 }

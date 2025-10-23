@@ -13,7 +13,7 @@ public class NotificationRecipient: EntityBase, IEntityBase
     public string Status { get; set; } = "";
 
 
-    public Notification Notification { get; set; } = null!;
+    //public virtual Notification Notification { get; set; } = null!;
     
     public void OnModelCreating(ModelBuilder m)
     {

@@ -8,9 +8,10 @@ namespace BSG.Notification.State;
 public interface INotificationState
 {
     List<NotificationPropertyDefinitionDto> PropertyDefinitions { get; set; }
-    List<string> PropertyTypes { get; set; }
+    List<NotificationDto> Notifications { get; set; }
 
 
+    Task GetNotifications(string email);
     Task GetPropertyDefinitions();
     Task<NotificationPropertyDefinitionDto?> SavePropertyDefinition(NotificationPropertyDefinitionDto propertyDefinition);
     Task DeletePropertyDefinition(long id);
@@ -22,8 +23,6 @@ public class NotificationState : StateBase, INotificationState
 
     private readonly INotificationPropertyDataService _propertyDataService;
     private readonly INotificationDataService _notificationDataService;
-
-    public List<string> PropertyTypes { get; set; } = NotificationPropertyType.GetAllNotificationPropertyTypes();
 
     #region PropertyDefinitions
 
@@ -41,6 +40,22 @@ public class NotificationState : StateBase, INotificationState
 
     #endregion
 
+    #region Notifications
+
+    private List<NotificationDto> _notifications = [];
+
+    public List<NotificationDto> Notifications
+    {
+        get => _notifications;
+        set
+        {
+            _notifications = value;
+            OnPropertyChanged();
+        }
+    }
+
+    #endregion
+
     #endregion
 
     public NotificationState(INotificationPropertyDataService propertyDataService,
@@ -48,6 +63,11 @@ public class NotificationState : StateBase, INotificationState
     {
         _propertyDataService = propertyDataService;
         _notificationDataService = notificationDataService;
+    }
+
+    public async Task GetNotifications(string email)
+    {
+        Notifications = await _notificationDataService.GetByEmail(email);
     }
 
     public async Task GetPropertyDefinitions()

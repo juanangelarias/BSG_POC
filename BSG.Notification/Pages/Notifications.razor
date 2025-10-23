@@ -1,0 +1,48 @@
+﻿@inject INotificationState State
+
+<RadzenPanel Text="Notifications" Style="height: 100%;">
+    <RadzenColumn Size="12">
+        <RadzenStack Orientation="Orientation.Vertical" Gap="0.5rem">
+            <RadzenRow>
+                <RadzenStack Orientation="Orientation.Horizontal" Gap="0.5rem" JustifyContent="JustifyContent.Center">
+                    <RadzenText Text="Select user email"/>
+                    <RadzenDropDown TValue="string" Data="@_users" TextProperty="Name" ValueProperty="Email"
+                                    Change="@(arg=>UserChanged(arg))"/>
+                </RadzenStack>
+            </RadzenRow>
+            <RadzenRow>
+                
+            </RadzenRow>
+        </RadzenStack>
+    </RadzenColumn>
+</RadzenPanel>
+
+@code {
+    private List<User> _users = [];
+    
+    protected override async Task OnParametersSetAsync()
+    {
+        await base.OnParametersSetAsync();
+
+        _users =
+        [
+            new() { Name = "Juan Arias A.", Email = "jarias@berkleysurety.com" },
+            new() { Name = "Matt Rodrigue", Email = "mrodrigue@berkleysurety.com" },
+            new() { Name = "Greg Wilson", Email = "gwilson@berkleysurety.com" }
+        ];
+    }
+
+    private async Task UserChanged(object obj)
+    {
+        var email = (string)obj;
+        
+        await State.GetNotifications(email);
+    } 
+
+
+    public class User
+    {
+        public string Name { get; set; } = "";
+        public string Email { get; set; } = "";
+    }
+}

@@ -23,6 +23,8 @@ public class NotificationRepository(IMapper mapper, BsgDbContext db)
     public async Task<List<NotificationDto>> GetByEmail(string email)
     {
         var qry = await _db.Notifications
+            .Include(i=>i.Properties)
+            .ThenInclude(t=>t.Property)
             .Include(i => i.Recipients)
             .Where(r => r.SenderEmail == email ||
                         r.Recipients.Any(a => a.Email == email && a.Status != NotificationStatus.Closed))
